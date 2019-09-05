@@ -1,4 +1,3 @@
-# socket_echo_server.py
 import socket
 import sys
 
