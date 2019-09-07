@@ -3,6 +3,9 @@ import _thread
 import sys
 
 
+credentials = {}
+
+
 def receive_message(connection):
     message_received = ""
     while True:
@@ -12,6 +15,13 @@ def receive_message(connection):
         if len(data_received.decode("utf-8")) < 16:
             break
     return message_received
+
+
+def authenticate(username, password):
+    if username in credentials:
+        return credentials[username] == password
+    else:
+        return False
 
 
 def control_connection(connection, client_address):
@@ -25,6 +35,7 @@ def control_connection(connection, client_address):
     password = receive_message(connection)
     print("password recebido: " + str(password))
 
+    print(authenticate(username, password))
 
 # def control_connection(connection, client_address):
 #     print("control connection from" + str(client_address))
@@ -75,7 +86,19 @@ def test_thread(some_text):
     print("example: " + str(some_text))
 
 
+def create_credentials():
+    credentials_file = open("credentials.txt", "r")
+    lines = credentials_file.readlines()
+    for line in lines:
+        username = line.split(" ")[0]
+        password = line.split(" ")[1]
+        password = password.split("\n")[0]
+        credentials[username] = password
+
+
 if __name__ == "__main__":
+    create_credentials()
+
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
