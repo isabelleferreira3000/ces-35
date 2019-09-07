@@ -42,11 +42,21 @@ def control_connection(conn, client_addr):
     conn.sendall(bytes(str(is_correct_authentication), 'utf-8'))
     if is_correct_authentication:
         print("[" + str(client_addr) + "] passou!")
-        pass
+        while True:
+            command_line = receive_message(conn, client_addr)
+            print("[" + str(client_addr) + "] " + command_line)
+            print("[" + str(client_addr) + "]: " + str(is_a_valid_command_line(command_line)))
+            command_args = command_line.split(" ")
+            command = command_args[0]
+
+            if command == "close" or command == "quit":
+                conn.close()
+                break
+            else:
+                pass
     else:
         print("[" + str(client_addr) + "] nao passou :(")
         conn.close()
-        pass
 
 
 # def control_connection(connection, client_address):
@@ -90,7 +100,7 @@ def is_a_valid_command_line(command_line):
         return n_args == 1 or n_args == 2
 
     else:
-        print("Invalid command")
+        print("Error: Invalid command")
         return False
 
 

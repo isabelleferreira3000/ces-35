@@ -14,7 +14,8 @@ def receive_message(connection):
 
 
 if __name__ == "__main__":
-    while True:
+    finished = False
+    while not finished:
         command_line = input()
         command_args = command_line.split(" ")
         command = command_args[0]
@@ -23,7 +24,6 @@ if __name__ == "__main__":
         if command == "open":
             # Create a TCP/IP socket
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
             # Connect the socket to the port where the server is listening
             server_address = ('localhost', 2122)
             # print("connecting to " + server_address[0] + " port " + str(server_address[1]))
@@ -39,17 +39,34 @@ if __name__ == "__main__":
 
             authentication = receive_message(sock)
             if authentication == "True":
+                print("connected")
+
                 while True:
                     command_line = input()
+                    command_args = command_line.split(" ")
+                    command = command_args[0]
 
-                    # Send data
-                    print("enviando: " + str(command_line))
-                    sock.sendall(bytes(command_line, 'utf-8'))
+                    if command == "open":
+                        print("Error: already connected")
+                    else:
+                        # Send data
+                        print("enviando: " + str(command_line))
+                        sock.sendall(bytes(command_line, 'utf-8'))
+
+                        if command == "close":
+                            sock.close()
+                            break
+                        elif command == "quit":
+                            sock.close()
+                            finished = True
+                            break
 
             else:
                 print("Authentication error: incorrect username or password")
                 sock.close()
 
+        elif command == "quit":
+            finished = True
         else:
             print("not connected")
             pass
