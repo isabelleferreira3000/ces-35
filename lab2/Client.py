@@ -37,12 +37,18 @@ if __name__ == "__main__":
             password = input()
             sock.sendall(bytes(password, 'utf-8'))
 
-            while True:
-                command_line = input()
+            authentication = receive_message(sock)
+            if authentication == "True":
+                while True:
+                    command_line = input()
 
-                # Send data
-                print("enviando: " + str(command_line))
-                sock.sendall(bytes(command_line, 'utf-8'))
+                    # Send data
+                    print("enviando: " + str(command_line))
+                    sock.sendall(bytes(command_line, 'utf-8'))
+
+            else:
+                print("Authentication error: incorrect username or password")
+                sock.close()
 
         else:
             print("not connected")

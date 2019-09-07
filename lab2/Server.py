@@ -6,10 +6,10 @@ import sys
 credentials = {}
 
 
-def receive_message(connection):
+def receive_message(conn):
     message_received = ""
     while True:
-        data_received = connection.recv(16)
+        data_received = conn.recv(16)
         # print("recebido: " + data_received.decode("utf-8"))
         message_received = message_received + data_received.decode("utf-8")
         if len(data_received.decode("utf-8")) < 16:
@@ -24,18 +24,28 @@ def authenticate(username, password):
         return False
 
 
-def control_connection(connection, client_address):
-    print("control connection from" + str(client_address))
+def control_connection(conn, client_addr):
+    print("control connection from" + str(client_addr))
 
-    connection.sendall(bytes("user:", 'utf-8'))
-    username = receive_message(connection)
+    conn.sendall(bytes("user:", 'utf-8'))
+    username = receive_message(conn)
     print("username recebido: " + str(username))
 
-    connection.sendall(bytes("password:", 'utf-8'))
-    password = receive_message(connection)
+    conn.sendall(bytes("password:", 'utf-8'))
+    password = receive_message(conn)
     print("password recebido: " + str(password))
 
-    print(authenticate(username, password))
+    authentication = authenticate(username, password)
+
+    conn.sendall(bytes(str(authentication), 'utf-8'))
+
+    if authentication:
+        print("passou!")
+        pass
+    else:
+        print("nao passou :(")
+        conn.close()
+
 
 # def control_connection(connection, client_address):
 #     print("control connection from" + str(client_address))
@@ -113,7 +123,7 @@ if __name__ == "__main__":
 
     while True:
         # Wait for a connection
-        print('waiting for a connection')
+        # print('waiting for a connection')
         # _thread.start_new(test_thread, ("oi",))
         connection, client_address = sock.accept()
         _thread.start_new_thread(control_connection, (connection, client_address))
