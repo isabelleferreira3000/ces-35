@@ -59,47 +59,16 @@ if __name__ == "__main__":
             print('connection from', client_address)
 
             # Receive the data in small chunks and retransmit it
+            message = ""
+            i = 0
             while True:
                 data = connection.recv(16)
                 print("recebido: " + data.decode("utf-8"))
-                if not data:
-                #     print('sending data back to the client')
-                #     connection.sendall(data)
-                # else:
-                    print('no data from', client_address)
+                message = message + data.decode("utf-8")
+                if len(data.decode("utf-8")) < 16:
                     break
+            print("mensagem: " + str(message))
 
         finally:
             # Clean up the connection
             connection.close()
-
-        # try:
-        #     print('connection from', client_address)
-        #     connection.sendall(bytes("user:", 'utf-8'))
-        #
-        #     # Receive the data in small chunks and retransmit it
-        #     while True:
-        #         data = connection.recv(16)
-        #         print('received {!r}'.format(data))
-        #         if data:
-        #             print('sending data back to the client')
-        #             connection.sendall(data)
-        #         else:
-        #             print('no data from', client_address)
-        #             break
-        #
-        #     connection.sendall(bytes("password:", 'utf-8'))
-        #     # Receive the data in small chunks and retransmit it
-        #     while True:
-        #         data = connection.recv(16)
-        #         print('received {!r}'.format(data))
-        #         if data:
-        #             print('sending data back to the client')
-        #             connection.sendall(data)
-        #         else:
-        #             print('no data from', client_address)
-        #             break
-        #
-        # finally:
-        #     # Clean up the connection
-        #     connection.close()
