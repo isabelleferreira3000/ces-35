@@ -1,16 +1,15 @@
 import socket
 import _thread
-import sys
 
 
 credentials = {}
 
 
-def receive_message(conn):
+def receive_message(conn, client_addr):
     message_received = ""
     while True:
         data_received = conn.recv(16)
-        # print("recebido: " + data_received.decode("utf-8"))
+        # print("[" + str(client_addr) + "] recebido: " + data_received.decode("utf-8"))
         message_received = message_received + data_received.decode("utf-8")
         if len(data_received.decode("utf-8")) < 16:
             break
@@ -24,27 +23,30 @@ def authenticate(username, password):
         return False
 
 
+def correct_authentication(conn, client_addr):
+    conn.sendall(bytes("user:", 'utf-8'))
+    username = receive_message(conn, client_addr)
+    print("[" + str(client_addr) + "] username recebido: " + str(username))
+
+    conn.sendall(bytes("password:", 'utf-8'))
+    password = receive_message(conn, client_addr)
+    print("[" + str(client_addr) + "] password recebido: " + str(password))
+
+    return authenticate(username, password)
+
+
 def control_connection(conn, client_addr):
     print("control connection from" + str(client_addr))
 
-    conn.sendall(bytes("user:", 'utf-8'))
-    username = receive_message(conn)
-    print("username recebido: " + str(username))
-
-    conn.sendall(bytes("password:", 'utf-8'))
-    password = receive_message(conn)
-    print("password recebido: " + str(password))
-
-    authentication = authenticate(username, password)
-
-    conn.sendall(bytes(str(authentication), 'utf-8'))
-
-    if authentication:
-        print("passou!")
+    is_correct_authentication = correct_authentication(conn, client_addr)
+    conn.sendall(bytes(str(is_correct_authentication), 'utf-8'))
+    if is_correct_authentication:
+        print("[" + str(client_addr) + "] passou!")
         pass
     else:
-        print("nao passou :(")
+        print("[" + str(client_addr) + "] nao passou :(")
         conn.close()
+        pass
 
 
 # def control_connection(connection, client_address):
