@@ -2,6 +2,39 @@ import os
 import socket
 
 
+def get_command_line():
+    line_input = input()
+    comm = line_input.split(" ")[0]
+    args = line_input.split(" ")[1:]
+    return comm, args, line_input
+
+
+def is_a_valid_command_line(comm, args):
+    n_args = len(args)
+
+    if comm == "cd" \
+            or comm == "mkdir" or comm == "rmdir" \
+            or comm == "get" or comm == "put" or comm == "delete" \
+            or comm == "open":
+        if n_args != 1:
+            print("Error: 1 argument is expected to '" + comm + "'")
+        return n_args == 1
+
+    elif comm == "pwd" or comm == "close" or comm == "quit":
+        if n_args != 0:
+            print("Error: No argument is expected to '" + comm + "'")
+        return n_args == 0
+
+    elif comm == "ls":
+        if n_args != 0 and n_args != 1:
+            print("Error: 0 or 1 argument is expected to '" + comm + "'")
+        return n_args == 0 or n_args == 1
+
+    else:
+        print("Error: Invalid command")
+        return False
+
+
 def receive_message(connection):
     message_received = ""
     while True:
@@ -14,163 +47,60 @@ def receive_message(connection):
 
 
 if __name__ == "__main__":
+
     finished = False
+
     while not finished:
-        command_line = input()
-        command_args = command_line.split(" ")
-        command = command_args[0]
-        n_args = len(command_args)
 
-        if command == "open":
-            # Create a TCP/IP socket
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            # Connect the socket to the port where the server is listening
-            server_address = ('localhost', 2122)
-            # print("connecting to " + server_address[0] + " port " + str(server_address[1]))
-            sock.connect(server_address)
+        command, command_args, _ = get_command_line()
+        if is_a_valid_command_line(command, command_args):
 
-            # authentication
-            print(receive_message(sock))
-            username = input()
-            sock.sendall(bytes(username, 'utf-8'))
-            print(receive_message(sock))
-            password = input()
-            sock.sendall(bytes(password, 'utf-8'))
+            if command == "open":
+                # Create a TCP/IP socket and connect the socket to the port where the server is listening
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                server_address = ('localhost', 2122)
+                sock.connect(server_address)
+                # print("connecting to " + server_address[0] + " port " + str(server_address[1]))
 
-            authentication = receive_message(sock)
-            if authentication == "True":
-                print("connected")
+                # authentication
+                print(receive_message(sock))
+                username = input()
+                sock.sendall(bytes(username + "\r\n", 'utf-8'))
+                print(receive_message(sock))
+                password = input()
+                sock.sendall(bytes(password + "\r\n", 'utf-8'))
 
-                while True:
-                    command_line = input()
-                    command_args = command_line.split(" ")
-                    command = command_args[0]
+                authentication = receive_message(sock)
+                if authentication == "True":
+                    print("connected")
 
-                    if command == "open":
-                        print("Error: already connected")
-                    else:
-                        # Send data
-                        print("enviando: " + str(command_line))
-                        sock.sendall(bytes(command_line, 'utf-8'))
+                    while True:
+                        command, command_args, command_line = get_command_line()
+                        if is_a_valid_command_line(command, command_args):
 
-                        if command == "close":
-                            sock.close()
-                            break
-                        elif command == "quit":
-                            sock.close()
-                            finished = True
-                            break
+                            command_line = command_line + "\r\n"
 
+                            if command == "open":
+                                print("Error: already connected")
+
+                            else:
+                                # print("enviando: " + str(command_line))
+                                sock.sendall(bytes(command_line, 'utf-8'))
+
+                            if command == "close":
+                                sock.close()
+                                break
+                            elif command == "quit":
+                                sock.close()
+                                finished = True
+                                break
+
+                else:
+                    print("Authentication error: incorrect username or password")
+                    sock.close()
+
+            elif command == "quit":
+                finished = True
             else:
-                print("Authentication error: incorrect username or password")
-                sock.close()
-
-        elif command == "quit":
-            finished = True
-        else:
-            print("not connected")
-            pass
-
-    # # Create a TCP/IP socket
-    # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #
-    # # Connect the socket to the port where the server is listening
-    # server_address = ('localhost', 2122)
-    # print('connecting to {} port {}'.format(*server_address))
-    # sock.connect(server_address)
-    #
-    # while True:
-    #     command_line = input()
-    #
-    #     # Send data
-    #     print("enviando: " + str(command_line))
-    #     sock.sendall(bytes(command_line, 'utf-8'))
-
-        # # Create a TCP/IP socket
-        # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #
-        # # Connect the socket to the port where the server is listening
-        # server_address = ('localhost', 2122)
-        # print('connecting to {} port {}'.format(*server_address))
-        # sock.connect(server_address)
-
-        # if is_a_valid_command_line(command_line):
-        #     command_args = command_line.split(" ")
-        #     command = command_args[0]
-        #
-        #     # Directory Browsing and Listing
-        #     if command == "cd":
-        #         dirname = command_args[1]
-        #         print(dirname)
-        #
-        #     elif command == "ls":
-        #         if len(command_args) != 1:
-        #             dirname = command_args[1]
-        #             print(dirname)
-        #
-        #     elif command == "pwd":
-        #         pass
-        #
-        #     # Directory manipulation
-        #     elif command == "mkdir":
-        #         dirname = command_args[1]
-        #         print(dirname)
-        #
-        #     elif command == "rmdir":
-        #         dirname = command_args[1]
-        #         print(dirname)
-        #
-        #     # File Handling
-        #     elif command == "get":
-        #         filename = command_args[1]
-        #         print(filename)
-        #     elif command == "put":
-        #         filename = command_args[1]
-        #         print(filename)
-        #     elif command == "delete":
-        #         filename = command_args[1]
-        #         print(filename)
-        #
-        #     # Connection Management
-        #     elif command == "close":
-        #         pass
-        #     elif command == "open":
-        #         server = command_args[1]
-        #         # if server == "server.ita.br":
-        #         if True:
-        #             # Create a TCP/IP socket
-        #             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #             # Connect the socket to the port where the server is listening
-        #             server_address = ('localhost', 2122)
-        #             print('connecting to {} port {}'.format(*server_address))
-        #             sock.connect(server_address)
-        #
-        #             # Receive the data in small chunks and retransmit it
-        #             while True:
-        #                 data = sock.recv(16)
-        #                 if data:
-        #                     print(data)
-        #                 else:
-        #                     print('no data from', client_address)
-        #                     break
-        #
-        #             user = input()
-        #             sock.sendall(bytes(user, 'utf-8'))
-        #
-        #             # Receive the data in small chunks and retransmit it
-        #             while True:
-        #                 data = sock.recv(16)
-        #                 if data:
-        #                     print(data)
-        #                 else:
-        #                     print('no data from', client_address)
-        #                     break
-        #
-        #             password = input()
-        #             sock.sendall(bytes(password, 'utf-8'))
-        #
-        #         else:
-        #             print("No server " + server)
-        #
-        #     elif command == "quit":
-        #         break
+                print("not connected")
+                pass
