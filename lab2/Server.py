@@ -38,11 +38,13 @@ def check_authentication(conn):
 
 
 def check_if_file_already_exists(conn, filename):
-    files = os.listdir(os.getcwd())
+    files = os.listdir(sessions[conn].current_directory)
     if filename in files:
         conn.sendall(bytes("file already exists\r\n", 'utf-8'))
+        return True
     else:
         conn.sendall(bytes("file does not exists yet\r\n", 'utf-8'))
+        return False
 
 
 def manage_command_line(comm, args, conn):
@@ -102,19 +104,27 @@ def manage_command_line(comm, args, conn):
 
     # File Handling
     elif comm == "get":
-        feedback = receive_message(conn)
+        # CHECK IF THE FILE CLIENT WANTS EXISTS
+        if check_if_file_already_exists(conn, args[0]):
 
-        if feedback == "can get":
-            filename = args[0]
-            file = open(curr_session.current_directory + "/" + filename, "rb")
-            aux = file.read(1024)
-            while aux:
-                conn.send(aux)
+            feedback = receive_message(conn)
+
+            if feedback == "can get":
+                filename = args[0]
+                file = open(curr_session.current_directory + "/" + filename, "rb")
                 aux = file.read(1024)
-            conn.sendall(bytes("\r\n", 'utf-8'))
-            print("enviou")
-        elif feedback == "can not get":
-            pass
+                while aux:
+                    conn.send(aux)
+                    aux = file.read(1024)
+                conn.sendall(bytes("\r\n", 'utf-8'))
+                print("enviou")
+
+            # print("mandei ok")
+            # conn.sendall(bytes("ok\r\n", 'utf-8'))
+            # print("ok mandado")
+        # except FileNotFoundError as error:
+        #     print(error)
+        #     conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "put":
         try:
@@ -130,7 +140,7 @@ def manage_command_line(comm, args, conn):
                     if aux.endswith(bytes("\r\n", 'utf-8')):
                         break
                 print("recebeu")
-            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
+            conn.sendall(bytes("ok\r\n", 'utf-8'))
         except FileNotFoundError as error:
             print(error)
             conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))

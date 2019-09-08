@@ -3,7 +3,7 @@ import os
 
 
 def get_command_line():
-    line_input = input()
+    line_input = input("Command: ")
     comm = line_input.split(" ")[0]
     args = line_input.split(" ")[1:]
     return comm, args, line_input
@@ -144,35 +144,49 @@ if __name__ == "__main__":
                                 finished = True
                                 break
                             elif command == "get":
-                                already_exists = check_if_file_already_exists(command_args[0])
+                                # CHECK IF THE FILE CLIENT WANTS EXISTS IN SERVER
+                                feedback = receive_message(sock)
 
-                                can_get = True
-                                if already_exists:
-                                    print("File already exists. Do you want to overwrite local file? [Y/N]")
-                                    while True:
-                                        answer = input()
-                                        if answer.upper() == "Y":
-                                            break
-                                        elif answer.upper() == "N":
-                                            can_get = False
-                                            break
-                                        else:
-                                            print("Invalid answer. Please, answer with Y or N.")
+                                if feedback == "file already exists":
+                                    # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
+                                    already_exists = check_if_file_already_exists(command_args[0])
 
-                                if can_get:
-                                    sock.sendall(bytes("can get\r\n", 'utf-8'))
-                                    f = open(str(command_args[0]), 'wb')
-                                    aux = sock.recv(1024)
-                                    while aux:
-                                        f.write(aux)
+                                    can_get = True
+                                    if already_exists:
+                                        print("File already exists. Do you want to overwrite local file? [Y/N]")
+                                        while True:
+                                            answer = input()
+                                            if answer.upper() == "Y":
+                                                break
+                                            elif answer.upper() == "N":
+                                                can_get = False
+                                                break
+                                            else:
+                                                print("Invalid answer. Please, answer with Y or N.")
+
+                                    if can_get:
+                                        sock.sendall(bytes("can get\r\n", 'utf-8'))
+                                        f = open(str(command_args[0]), 'wb')
                                         aux = sock.recv(1024)
-                                        if aux.endswith(bytes("\r\n", 'utf-8')):
-                                            break
-                                    print("recebeu")
+                                        while aux:
+                                            f.write(aux)
+                                            aux = sock.recv(1024)
+                                            if aux.endswith(bytes("\r\n", 'utf-8')):
+                                                break
+                                        print("recebeu")
+                                    else:
+                                        sock.sendall(bytes("can not get\r\n", 'utf-8'))
+
+                                    # print("antes de receber o feedback")
+                                    # feedback = receive_message(sock)
+                                    # print("depois de receber o feedback")
+                                    # handle_feedback(command, feedback)
                                 else:
-                                    sock.sendall(bytes("can not get\r\n", 'utf-8'))
+                                    print("Error: file does not exists in server")
 
                             elif command == "put":
+                                file_exists_in_local = check_if_file_already_exists(command_args[0])
+
                                 feedback = receive_message(sock)
                                 can_receive = False
 
