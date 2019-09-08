@@ -2,6 +2,7 @@ import socket
 import _thread
 import os
 from Session import Session
+import shutil
 
 
 credentials = {}
@@ -69,11 +70,19 @@ def manage_command_line(comm, args, conn):
     # Directory manipulation
     elif comm == "mkdir":
         dirname = args[0]
-        print(dirname)
+        try:
+            os.mkdir(curr_session.current_directory + "/" + dirname)
+        except OSError as error:
+            print(error)
+            # print(dirname)
 
     elif comm == "rmdir":
         dirname = args[0]
-        print(dirname)
+
+        try:
+            shutil.rmtree(curr_session.current_directory + "/" + dirname)
+        except OSError as error:
+            print(error)
 
     # File Handling
     elif comm == "get":
