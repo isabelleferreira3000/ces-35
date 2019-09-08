@@ -1,4 +1,3 @@
-import os
 import socket
 
 
@@ -135,6 +134,12 @@ if __name__ == "__main__":
                                 sock.close()
                                 finished = True
                                 break
+                            elif command == "get":
+                                pass
+
+                            elif command == "put":
+                                pass
+
                             else:
                                 feedback = receive_message(sock)
                                 handle_feedback(command, feedback)

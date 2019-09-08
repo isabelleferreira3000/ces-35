@@ -3,7 +3,6 @@ import _thread
 import os
 from Session import Session
 import shutil
-from shutil import copyfile
 
 
 credentials = {}
@@ -96,23 +95,9 @@ def manage_command_line(comm, args, conn):
     # File Handling
     elif comm == "get":
         filename = args[0]
-        try:
-            shutil.copyfile(curr_session.current_directory + "/" + filename,
-                            curr_session.current_directory + "/" + "exemplo.jpeg")
-            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
-        except OSError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "put":
         filename = args[0]
-        try:
-            shutil.copyfile(curr_session.current_directory + "/" + filename,
-                            curr_session.current_directory + "/" + "exemplo.jpeg")
-            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
-        except OSError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "delete":
         filename = args[0]
@@ -149,10 +134,6 @@ def control_connection(conn, client_addr):
         conn.close()
 
 
-def test_thread(some_text):
-    print("example: " + str(some_text))
-
-
 def create_credentials():
     credentials_file = open("credentials.txt", "r")
     lines = credentials_file.readlines()
@@ -174,7 +155,7 @@ if __name__ == "__main__":
     sock.bind(server_address)
 
     # Listen for incoming connections
-    sock.listen(1)
+    sock.listen(10)
 
     while True:
         # Wait for a connection
