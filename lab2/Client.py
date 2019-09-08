@@ -167,6 +167,7 @@ if __name__ == "__main__":
 
                             elif command == "put":
                                 feedback = receive_message(sock)
+                                can_receive = False
 
                                 if feedback == "file already exists":
                                     print("File already exists. Do you want to overwrite remote file? [Y/N]")
@@ -174,6 +175,7 @@ if __name__ == "__main__":
                                         answer = input()
                                         if answer.upper() == "Y":
                                             sock.sendall(bytes("Y\r\n", 'utf-8'))
+                                            can_receive = True
                                             break
                                         elif answer.upper() == "N":
                                             sock.sendall(bytes("N\r\n", 'utf-8'))
@@ -181,15 +183,18 @@ if __name__ == "__main__":
                                         else:
                                             print("Invalid answer. Please, answer with Y or N.")
                                 else:
+                                    can_receive = True
                                     sock.sendall(bytes("Y\r\n", 'utf-8'))
 
-                                file = open(command_args[0], "rb")
-                                aux = file.read(1024)
-                                while aux:
-                                    sock.send(aux)
+                                if can_receive:
+                                    file = open(command_args[0], "rb")
                                     aux = file.read(1024)
-                                sock.sendall(bytes("\r\n", 'utf-8'))
-                                print("enviou")
+                                    while aux:
+                                        sock.send(aux)
+                                        aux = file.read(1024)
+                                    sock.sendall(bytes("\r\n", 'utf-8'))
+                                    print("enviou")
+
                                 feedback = receive_message(sock)
                                 handle_feedback(command, feedback)
 
