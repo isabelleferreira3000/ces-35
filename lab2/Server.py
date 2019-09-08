@@ -102,7 +102,9 @@ def manage_command_line(comm, args, conn):
 
     # File Handling
     elif comm == "get":
-        try:
+        feedback = receive_message(conn)
+
+        if feedback == "can get":
             filename = args[0]
             file = open(curr_session.current_directory + "/" + filename, "rb")
             aux = file.read(1024)
@@ -111,10 +113,8 @@ def manage_command_line(comm, args, conn):
                 aux = file.read(1024)
             conn.sendall(bytes("\r\n", 'utf-8'))
             print("enviou")
-            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
-        except FileNotFoundError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+        elif feedback == "can not get":
+            pass
 
     elif comm == "put":
         try:

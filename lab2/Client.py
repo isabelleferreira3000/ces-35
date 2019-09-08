@@ -89,20 +89,12 @@ def handle_feedback(comm, text):
             print(text)
 
 
-def check_if_can_continue(filename):
+def check_if_file_already_exists(filename):
     files = os.listdir(os.getcwd())
     if filename in files:
-        print("File already exists. Do you want to overwrite remote file? [Y/N]")
-        while True:
-            answer = input()
-            if answer.upper() == "Y":
-                return True
-            elif answer.upper() == "N":
-                return False
-            else:
-                print("Invalid answer. Please, answer with Y or N.")
-    else:
         return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
@@ -152,8 +144,23 @@ if __name__ == "__main__":
                                 finished = True
                                 break
                             elif command == "get":
-                                overwrite_file = check_if_can_continue(command_args[0])
-                                if overwrite_file:
+                                already_exists = check_if_file_already_exists(command_args[0])
+
+                                can_get = True
+                                if already_exists:
+                                    print("File already exists. Do you want to overwrite local file? [Y/N]")
+                                    while True:
+                                        answer = input()
+                                        if answer.upper() == "Y":
+                                            break
+                                        elif answer.upper() == "N":
+                                            can_get = False
+                                            break
+                                        else:
+                                            print("Invalid answer. Please, answer with Y or N.")
+
+                                if can_get:
+                                    sock.sendall(bytes("can get\r\n", 'utf-8'))
                                     f = open(str(command_args[0]), 'wb')
                                     aux = sock.recv(1024)
                                     while aux:
@@ -162,8 +169,8 @@ if __name__ == "__main__":
                                         if aux.endswith(bytes("\r\n", 'utf-8')):
                                             break
                                     print("recebeu")
-                                    feedback = receive_message(sock)
-                                    handle_feedback(command, feedback)
+                                else:
+                                    sock.sendall(bytes("can not get\r\n", 'utf-8'))
 
                             elif command == "put":
                                 feedback = receive_message(sock)
