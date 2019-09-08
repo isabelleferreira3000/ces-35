@@ -3,6 +3,7 @@ import _thread
 import os
 from Session import Session
 import shutil
+from shutil import copyfile
 
 
 credentials = {}
@@ -87,13 +88,26 @@ def manage_command_line(comm, args, conn):
     # File Handling
     elif comm == "get":
         filename = args[0]
-        print(filename)
+        try:
+            shutil.copyfile(curr_session.current_directory + "/" + filename,
+                            curr_session.current_directory + "/" + "exemplo.jpeg")
+        except OSError as error:
+            print(error)
+
     elif comm == "put":
         filename = args[0]
-        print(filename)
+        try:
+            shutil.copyfile(curr_session.current_directory + "/" + filename,
+                            curr_session.current_directory + "/" + "exemplo.jpeg")
+        except OSError as error:
+            print(error)
+
     elif comm == "delete":
         filename = args[0]
-        print(filename)
+        try:
+            os.remove(curr_session.current_directory + "/" + filename)
+        except OSError as error:
+            print(error)
 
 
 def control_connection(conn, client_addr):
