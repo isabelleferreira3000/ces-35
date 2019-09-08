@@ -95,9 +95,24 @@ def manage_command_line(comm, args, conn):
     # File Handling
     elif comm == "get":
         filename = args[0]
+        file = open(curr_session.current_directory + "/" + filename, "rb")
+        aux = file.read(1024)
+        while aux:
+            conn.send(aux)
+            aux = file.read(1024)
+        conn.sendall(bytes("\r\n", 'utf-8'))
+        print("enviou")
 
     elif comm == "put":
         filename = args[0]
+        f = open(curr_session.current_directory + "/" + filename, 'wb')
+        aux = conn.recv(1024)
+        while aux:
+            f.write(aux)
+            aux = conn.recv(1024)
+            if aux.endswith(bytes("\r\n", 'utf-8')):
+                break
+        print("recebeu")
 
     elif comm == "delete":
         filename = args[0]

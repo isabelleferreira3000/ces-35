@@ -135,10 +135,23 @@ if __name__ == "__main__":
                                 finished = True
                                 break
                             elif command == "get":
-                                pass
+                                f = open(str(command_args[0]), 'wb')
+                                aux = sock.recv(1024)
+                                while aux:
+                                    f.write(aux)
+                                    aux = sock.recv(1024)
+                                    if aux.endswith(bytes("\r\n", 'utf-8')):
+                                        break
+                                print("recebeu")
 
                             elif command == "put":
-                                pass
+                                file = open(command_args[0], "rb")
+                                aux = file.read(1024)
+                                while aux:
+                                    sock.send(aux)
+                                    aux = file.read(1024)
+                                sock.sendall(bytes("\r\n", 'utf-8'))
+                                print("enviou")
 
                             else:
                                 feedback = receive_message(sock)
