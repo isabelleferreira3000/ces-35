@@ -14,7 +14,7 @@ def receive_message(conn):
     while True:
         data_received = conn.recv(16)
         message_received = message_received + data_received.decode("utf-8")
-        if data_received.decode("utf-8").endswith("\r\n"):
+        if message_received.endswith("\r\n"):
             break
     message_received = message_received.split("\r\n")[0]
     return message_received
@@ -35,6 +35,14 @@ def check_authentication(conn):
     password = receive_message(conn)
 
     return authenticate(username, password), username
+
+
+def check_if_file_already_exists(conn, filename):
+    files = os.listdir(os.getcwd())
+    if filename in files:
+        conn.sendall(bytes("file already exists\r\n", 'utf-8'))
+    else:
+        conn.sendall(bytes("file does not exists yet\r\n", 'utf-8'))
 
 
 def manage_command_line(comm, args, conn):
@@ -94,25 +102,38 @@ def manage_command_line(comm, args, conn):
 
     # File Handling
     elif comm == "get":
-        filename = args[0]
-        file = open(curr_session.current_directory + "/" + filename, "rb")
-        aux = file.read(1024)
-        while aux:
-            conn.send(aux)
+        try:
+            filename = args[0]
+            file = open(curr_session.current_directory + "/" + filename, "rb")
             aux = file.read(1024)
-        conn.sendall(bytes("\r\n", 'utf-8'))
-        print("enviou")
+            while aux:
+                conn.send(aux)
+                aux = file.read(1024)
+            conn.sendall(bytes("\r\n", 'utf-8'))
+            print("enviou")
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
+        except FileNotFoundError as error:
+            print(error)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "put":
-        filename = args[0]
-        f = open(curr_session.current_directory + "/" + filename, 'wb')
-        aux = conn.recv(1024)
-        while aux:
-            f.write(aux)
-            aux = conn.recv(1024)
-            if aux.endswith(bytes("\r\n", 'utf-8')):
-                break
-        print("recebeu")
+        try:
+            filename = args[0]
+            check_if_file_already_exists(conn, filename)
+            can_continue = receive_message(conn)
+            if can_continue == "Y":
+                f = open(curr_session.current_directory + "/" + filename, 'wb')
+                aux = conn.recv(1024)
+                while aux:
+                    f.write(aux)
+                    aux = conn.recv(1024)
+                    if aux.endswith(bytes("\r\n", 'utf-8')):
+                        break
+                print("recebeu")
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
+        except FileNotFoundError as error:
+            print(error)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "delete":
         filename = args[0]

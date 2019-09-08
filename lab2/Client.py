@@ -1,4 +1,5 @@
 import socket
+import os
 
 
 def get_command_line():
@@ -39,7 +40,7 @@ def receive_message(conn):
     while True:
         data_received = conn.recv(16)
         message_received = message_received + data_received.decode("utf-8")
-        if data_received.decode("utf-8").endswith("\r\n"):
+        if message_received.endswith("\r\n"):
             break
     message_received = message_received.split("\r\n")[0]
     return message_received
@@ -86,6 +87,22 @@ def handle_feedback(comm, text):
     elif comm == "delete":
         if text != "ok":
             print(text)
+
+
+def check_if_can_continue(filename):
+    files = os.listdir(os.getcwd())
+    if filename in files:
+        print("File already exists. Do you want to overwrite remote file? [Y/N]")
+        while True:
+            answer = input()
+            if answer.upper() == "Y":
+                return True
+            elif answer.upper() == "N":
+                return False
+            else:
+                print("Invalid answer. Please, answer with Y or N.")
+    else:
+        return True
 
 
 if __name__ == "__main__":
@@ -135,16 +152,37 @@ if __name__ == "__main__":
                                 finished = True
                                 break
                             elif command == "get":
-                                f = open(str(command_args[0]), 'wb')
-                                aux = sock.recv(1024)
-                                while aux:
-                                    f.write(aux)
+                                overwrite_file = check_if_can_continue(command_args[0])
+                                if overwrite_file:
+                                    f = open(str(command_args[0]), 'wb')
                                     aux = sock.recv(1024)
-                                    if aux.endswith(bytes("\r\n", 'utf-8')):
-                                        break
-                                print("recebeu")
+                                    while aux:
+                                        f.write(aux)
+                                        aux = sock.recv(1024)
+                                        if aux.endswith(bytes("\r\n", 'utf-8')):
+                                            break
+                                    print("recebeu")
+                                    feedback = receive_message(sock)
+                                    handle_feedback(command, feedback)
 
                             elif command == "put":
+                                feedback = receive_message(sock)
+
+                                if feedback == "file already exists":
+                                    print("File already exists. Do you want to overwrite remote file? [Y/N]")
+                                    while True:
+                                        answer = input()
+                                        if answer.upper() == "Y":
+                                            sock.sendall(bytes("Y\r\n", 'utf-8'))
+                                            break
+                                        elif answer.upper() == "N":
+                                            sock.sendall(bytes("N\r\n", 'utf-8'))
+                                            break
+                                        else:
+                                            print("Invalid answer. Please, answer with Y or N.")
+                                else:
+                                    sock.sendall(bytes("Y\r\n", 'utf-8'))
+
                                 file = open(command_args[0], "rb")
                                 aux = file.read(1024)
                                 while aux:
@@ -152,6 +190,8 @@ if __name__ == "__main__":
                                     aux = file.read(1024)
                                 sock.sendall(bytes("\r\n", 'utf-8'))
                                 print("enviou")
+                                feedback = receive_message(sock)
+                                handle_feedback(command, feedback)
 
                             else:
                                 feedback = receive_message(sock)
