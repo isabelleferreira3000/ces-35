@@ -46,6 +46,49 @@ def receive_message(conn):
     return message_received
 
 
+def handle_feedback(comm, text):
+
+    if comm == "cd":
+        if text != "ok":
+            print(text)
+
+    elif comm == "ls":
+        try:
+            aux = text.split("[")[1:]
+            aux = aux[0].split("]")[0]
+            aux = aux.split(", ")
+            for x in aux:
+                x = x.split("'")[1]
+                print(x)
+        except:
+            print(text)
+
+    elif comm == "pwd":
+        print(text)
+
+    # Directory manipulation
+    elif comm == "mkdir":
+        if text != "ok":
+            print(text)
+
+    elif comm == "rmdir":
+        if text != "ok":
+            print(text)
+
+    # File Handling
+    elif comm == "get":
+        if text != "ok":
+            print(text)
+
+    elif comm == "put":
+        if text != "ok":
+            print(text)
+
+    elif comm == "delete":
+        if text != "ok":
+            print(text)
+
+
 if __name__ == "__main__":
 
     finished = False
@@ -60,7 +103,6 @@ if __name__ == "__main__":
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 server_address = ('localhost', 2122)
                 sock.connect(server_address)
-                # print("connecting to " + server_address[0] + " port " + str(server_address[1]))
 
                 # authentication
                 print(receive_message(sock))
@@ -84,7 +126,6 @@ if __name__ == "__main__":
                                 print("Error: already connected")
 
                             else:
-                                # print("enviando: " + str(command_line))
                                 sock.sendall(bytes(command_line, 'utf-8'))
 
                             if command == "close":
@@ -94,6 +135,9 @@ if __name__ == "__main__":
                                 sock.close()
                                 finished = True
                                 break
+                            else:
+                                feedback = receive_message(sock)
+                                handle_feedback(command, feedback)
 
                 else:
                     print("Authentication error: incorrect username or password")

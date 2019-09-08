@@ -50,40 +50,48 @@ def manage_command_line(comm, args, conn):
             os.chdir(curr_path + "/" + dirname)
             curr_path = os.getcwd()
             curr_session.current_directory = curr_path
-        except FileNotFoundError:
-            print("FileNotFoundError")
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
+        except FileNotFoundError as error:
+            print(error)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "ls":
         if len(args) != 0:
             dirname = args[0]
             try:
                 print(os.listdir(curr_session.current_directory + "/" + dirname))
-            except FileNotFoundError:
-                print("FileNotFoundError")
+                conn.sendall(bytes(str(os.listdir(curr_session.current_directory + "/" + dirname)) + "\r\n", 'utf-8'))
+            except FileNotFoundError as error:
+                print(error)
+                conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
         else:
             print(os.listdir(curr_session.current_directory))
+            conn.sendall(bytes(str(os.listdir(curr_session.current_directory)) + "\r\n", 'utf-8'))
 
     elif comm == "pwd":
         dirpath = curr_session.current_directory
         print(dirpath)
-        dirpath = dirpath + "\r\n"
+        conn.sendall(bytes(dirpath + "\r\n", 'utf-8'))
 
     # Directory manipulation
     elif comm == "mkdir":
         dirname = args[0]
         try:
             os.mkdir(curr_session.current_directory + "/" + dirname)
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
         except OSError as error:
             print(error)
-            # print(dirname)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "rmdir":
         dirname = args[0]
 
         try:
             shutil.rmtree(curr_session.current_directory + "/" + dirname)
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
         except OSError as error:
             print(error)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     # File Handling
     elif comm == "get":
@@ -91,23 +99,29 @@ def manage_command_line(comm, args, conn):
         try:
             shutil.copyfile(curr_session.current_directory + "/" + filename,
                             curr_session.current_directory + "/" + "exemplo.jpeg")
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
         except OSError as error:
             print(error)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "put":
         filename = args[0]
         try:
             shutil.copyfile(curr_session.current_directory + "/" + filename,
                             curr_session.current_directory + "/" + "exemplo.jpeg")
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
         except OSError as error:
             print(error)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
     elif comm == "delete":
         filename = args[0]
         try:
             os.remove(curr_session.current_directory + "/" + filename)
+            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
         except OSError as error:
             print(error)
+            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
 
 
 def control_connection(conn, client_addr):
