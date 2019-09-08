@@ -35,14 +35,14 @@ def is_a_valid_command_line(comm, args):
         return False
 
 
-def receive_message(connection):
+def receive_message(conn):
     message_received = ""
     while True:
-        data_received = connection.recv(16)
-        # print("recebido: " + data_received.decode("utf-8"))
+        data_received = conn.recv(16)
         message_received = message_received + data_received.decode("utf-8")
-        if len(data_received.decode("utf-8")) < 16:
+        if data_received.decode("utf-8").endswith("\r\n"):
             break
+    message_received = message_received.split("\r\n")[0]
     return message_received
 
 

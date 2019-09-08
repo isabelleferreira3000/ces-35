@@ -1,15 +1,17 @@
 import socket
 import _thread
+import os
+from Session import Session
 
 
 credentials = {}
+sessions = {}
 
 
-def receive_message(conn, client_addr):
+def receive_message(conn):
     message_received = ""
     while True:
         data_received = conn.recv(16)
-        # print("[" + str(client_addr) + "] recebido: " + data_received.decode("utf-8"))
         message_received = message_received + data_received.decode("utf-8")
         if data_received.decode("utf-8").endswith("\r\n"):
             break
@@ -24,31 +26,45 @@ def authenticate(username, password):
         return False
 
 
-def check_authentication(conn, client_addr):
-    conn.sendall(bytes("user:", 'utf-8'))
-    username = receive_message(conn, client_addr)
-    # print("[" + str(client_addr) + "] username recebido: " + str(username))
+def check_authentication(conn):
+    conn.sendall(bytes("user:\r\n", 'utf-8'))
+    username = receive_message(conn)
 
-    conn.sendall(bytes("password:", 'utf-8'))
-    password = receive_message(conn, client_addr)
-    # print("[" + str(client_addr) + "] password recebido: " + str(password))
+    conn.sendall(bytes("password:\r\n", 'utf-8'))
+    password = receive_message(conn)
 
-    return authenticate(username, password)
+    return authenticate(username, password), username
 
 
 def manage_command_line(comm, args, conn):
+    curr_session = sessions[conn]
+
     # Directory Browsing and Listing
     if comm == "cd":
         dirname = args[0]
-        print(dirname)
+        curr_path = curr_session.current_directory
+
+        try:
+            os.chdir(curr_path + "/" + dirname)
+            curr_path = os.getcwd()
+            curr_session.current_directory = curr_path
+        except FileNotFoundError:
+            print("FileNotFoundError")
 
     elif comm == "ls":
-        if len(args) != 1:
+        if len(args) != 0:
             dirname = args[0]
-            print(dirname)
+            try:
+                print(os.listdir(curr_session.current_directory + "/" + dirname))
+            except FileNotFoundError:
+                print("FileNotFoundError")
+        else:
+            print(os.listdir(curr_session.current_directory))
 
     elif comm == "pwd":
-        pass
+        dirpath = curr_session.current_directory
+        print(dirpath)
+        dirpath = dirpath + "\r\n"
 
     # Directory manipulation
     elif comm == "mkdir":
@@ -74,16 +90,17 @@ def manage_command_line(comm, args, conn):
 def control_connection(conn, client_addr):
     print("control connection from" + str(client_addr))
 
-    is_correct_authentication = check_authentication(conn, client_addr)
-    conn.sendall(bytes(str(is_correct_authentication), 'utf-8'))
+    is_correct_authentication, username = check_authentication(conn)
+    conn.sendall(bytes(str(is_correct_authentication) + "\r\n", 'utf-8'))
     if is_correct_authentication:
-        print("[" + str(client_addr) + "] passou!")
+        print("[" + username + "] connected!")
+        current_session = Session(os.getcwd(), username)
+        sessions[conn] = current_session
 
         while True:
-            command_line = receive_message(conn, client_addr)
+            command_line = receive_message(conn)
             command = command_line.split(" ")[0]
             command_args = command_line.split(" ")[1:]
-            # print("[" + str(client_addr) + "] " + command_line)
 
             if command == "close" or command == "quit":
                 conn.close()
@@ -91,7 +108,7 @@ def control_connection(conn, client_addr):
             else:
                 manage_command_line(command, command_args, conn)
     else:
-        print("[" + str(client_addr) + "] nao passou :(")
+        print("[" + username + "] failed on authentication")
         conn.close()
 
 
