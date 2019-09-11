@@ -196,7 +196,7 @@ if __name__ == "__main__":
     # Create a TCP/IP socket and bind the socket to the port
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_address = ('localhost', 2122)
+    server_address = ('localhost', 2121)
     print("starting up on " + server_address[0] + " port " + str(server_address[1]))
     sock.bind(server_address)
 

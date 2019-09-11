@@ -3,7 +3,7 @@ import os
 
 
 def get_command_line():
-    line_input = input("Command: ")
+    line_input = input(">> ")
     comm = line_input.split(" ")[0]
     args = line_input.split(" ")[1:]
     return comm, args, line_input
@@ -109,20 +109,18 @@ if __name__ == "__main__":
             if command == "open":
                 # Create a TCP/IP socket and connect the socket to the port where the server is listening
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                server_address = ('localhost', 2122)
+                server_address = ('localhost', 2121)
                 sock.connect(server_address)
 
                 # authentication
-                print(receive_message(sock))
-                username = input()
+                username = input(receive_message(sock) + " ")
                 sock.sendall(bytes(username + "\r\n", 'utf-8'))
-                print(receive_message(sock))
-                password = input()
+                password = input(receive_message(sock) + " ")
                 sock.sendall(bytes(password + "\r\n", 'utf-8'))
 
                 authentication = receive_message(sock)
                 if authentication == "True":
-                    print("connected")
+                    print("connected!")
 
                     while True:
                         command, command_args, command_line = get_command_line()
@@ -219,7 +217,7 @@ if __name__ == "__main__":
                                 feedback = receive_message(sock)
                                 handle_feedback(command, feedback)
 
-                            else:
+                            elif command != "open":
                                 feedback = receive_message(sock)
                                 handle_feedback(command, feedback)
 
