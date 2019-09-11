@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
                     authentication = receive_message(sock)
                     if authentication == "True":
-                        print("connected!")
+                        print("Connected!")
 
                         while True:
                             command, command_args, command_line = get_command_line()
@@ -148,8 +148,12 @@ if __name__ == "__main__":
                                     feedback = receive_message(sock)
 
                                     if feedback == "file already exists":
+                                        filename = command_args[0]
+
                                         # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
-                                        already_exists = check_if_file_already_exists(command_args[0])
+                                        if len(filename.rsplit('/', 1)) == 2:
+                                            filename = filename.rsplit('/', 1)[1]
+                                        already_exists = check_if_file_already_exists(filename)
 
                                         can_get = True
                                         if already_exists:
@@ -165,15 +169,16 @@ if __name__ == "__main__":
                                                     print("Invalid answer. Please, answer with Y or N.")
 
                                         if can_get:
+                                            file_name = command_args[0].split("/")[-1]
                                             sock.sendall(bytes("can get\r\n", 'utf-8'))
-                                            f = open(str(command_args[0]), 'wb')
+                                            f = open(str(file_name), 'wb')
                                             aux = sock.recv(1024)
                                             while aux:
                                                 f.write(aux)
                                                 aux = sock.recv(1024)
                                                 if aux.endswith(bytes("\r\n", 'utf-8')):
                                                     break
-                                            print("recebeu")
+                                            print("File downloaded!")
                                         else:
                                             sock.sendall(bytes("can not get\r\n", 'utf-8'))
 

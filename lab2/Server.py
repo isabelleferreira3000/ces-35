@@ -38,11 +38,21 @@ def check_authentication(conn):
 
 
 def check_if_file_already_exists(conn, filename):
-    files = os.listdir(sessions[conn].current_directory)
+    aux = ""
+
+    if len(filename.rsplit('/', 1)) == 2:
+        aux = filename.rsplit('/', 1)[0]
+        filename = filename.rsplit('/', 1)[1]
+        if aux.startswith("/"):
+            aux = aux[1:]
+
+    files = os.listdir(sessions[conn].current_directory + "/" + aux)
     if filename in files:
+        print("[" + sessions[conn].username + "] reply: file exists")
         conn.sendall(bytes("file already exists\r\n", 'utf-8'))
         return True
     else:
+        print("[" + sessions[conn].username + "] reply: file does not exists")
         conn.sendall(bytes("file does not exists yet\r\n", 'utf-8'))
         return False
 
@@ -121,6 +131,7 @@ def manage_command_line(comm, args, conn):
             feedback = receive_message(conn)
 
             if feedback == "can get":
+                print("[" + curr_session.username + "] 'Y': can send file")
                 filename = args[0]
                 file = open(curr_session.current_directory + "/" + filename, "rb")
                 aux = file.read(1024)
@@ -128,14 +139,9 @@ def manage_command_line(comm, args, conn):
                     conn.send(aux)
                     aux = file.read(1024)
                 conn.sendall(bytes("\r\n", 'utf-8'))
-                print("enviou")
-
-            # print("mandei ok")
-            # conn.sendall(bytes("ok\r\n", 'utf-8'))
-            # print("ok mandado")
-        # except FileNotFoundError as error:
-        #     print(error)
-        #     conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+                print("[" + curr_session.username + "] File sent")
+            else:
+                print("[" + curr_session.username + "] 'N': can not send file")
 
     elif comm == "put":
         try:
