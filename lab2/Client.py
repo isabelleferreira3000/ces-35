@@ -90,8 +90,16 @@ def handle_feedback(comm, text):
 
 
 def check_if_file_already_exists(filename):
-    files = os.listdir(os.getcwd())
-    if filename in files:
+    name = filename.rsplit('/', 1)[-1]
+    path = ""
+    if len(filename.rsplit('/', 1)) == 2:
+        path = filename.rsplit('/', 1)[0]
+        if path.startswith("/"):
+            path = path[1:]
+
+    files = os.listdir(os.getcwd() + "/" + path)
+    print(files)
+    if name in files:
         return True
     else:
         return False
@@ -186,39 +194,59 @@ if __name__ == "__main__":
                                         print("Error: file does not exists in server")
 
                                 elif command == "put":
+                                    # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
                                     file_exists_in_local = check_if_file_already_exists(command_args[0])
 
-                                    feedback = receive_message(sock)
-                                    can_receive = False
+                                    if file_exists_in_local:
+                                        sock.sendall(bytes("files exists in local\r\n", 'utf-8'))
 
-                                    if feedback == "file already exists":
-                                        print("File already exists. Do you want to overwrite remote file? [Y/N]")
-                                        while True:
-                                            answer = input()
-                                            if answer.upper() == "Y":
-                                                sock.sendall(bytes("Y\r\n", 'utf-8'))
-                                                can_receive = True
-                                                break
-                                            elif answer.upper() == "N":
-                                                sock.sendall(bytes("N\r\n", 'utf-8'))
-                                                break
-                                            else:
-                                                print("Invalid answer. Please, answer with Y or N.")
-                                    else:
-                                        can_receive = True
-                                        sock.sendall(bytes("Y\r\n", 'utf-8'))
+                                        feedback = receive_message(sock)
+                                        can_receive = False
 
-                                    if can_receive:
-                                        file = open(command_args[0], "rb")
-                                        aux = file.read(1024)
-                                        while aux:
-                                            sock.send(aux)
+                                        if feedback == "file already exists":
+                                            print("File already exists. Do you want to overwrite remote file? [Y/N]")
+                                            while True:
+                                                answer = input()
+                                                if answer.upper() == "Y":
+                                                    sock.sendall(bytes("Y\r\n", 'utf-8'))
+                                                    can_receive = True
+                                                    break
+                                                elif answer.upper() == "N":
+                                                    sock.sendall(bytes("N\r\n", 'utf-8'))
+                                                    break
+                                                else:
+                                                    print("Invalid answer. Please, answer with Y or N.")
+                                        else:
+                                            can_receive = True
+                                            sock.sendall(bytes("Y\r\n", 'utf-8'))
+
+                                        if can_receive:
+                                            filename = command_args[0].rsplit('/', 1)[-1]
+                                            filepath = ""
+                                            if len(filename.rsplit('/', 1)) == 2:
+                                                filepath = filename.rsplit('/', 1)[0]
+                                                if filepath.startswith("/"):
+                                                    filepath = filepath[1:]
+
+                                            curr_dir = os.getcwd()
+                                            os.chdir(curr_dir + "/" + filepath)
+
+                                            file = open(filename, "rb")
                                             aux = file.read(1024)
-                                        sock.sendall(bytes("\r\n", 'utf-8'))
-                                        print("enviou")
+                                            while aux:
+                                                sock.send(aux)
+                                                aux = file.read(1024)
+                                            sock.sendall(bytes("\r\n", 'utf-8'))
 
-                                    feedback = receive_message(sock)
-                                    handle_feedback(command, feedback)
+                                            os.chdir(curr_dir)
+                                            print("File sent!")
+
+                                        feedback = receive_message(sock)
+                                        handle_feedback(command, feedback)
+
+                                    else:
+                                        print("Error: file does not exists in local")
+                                        sock.sendall(bytes("files does not exists in local\r\n", 'utf-8'))
 
                                 elif command != "open":
                                     feedback = receive_message(sock)

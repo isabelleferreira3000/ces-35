@@ -144,11 +144,18 @@ def manage_command_line(comm, args, conn):
                 print("[" + curr_session.username + "] 'N': can not send file")
 
     elif comm == "put":
-        try:
-            filename = args[0]
+        # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
+        feedback = receive_message(conn)
+
+        if feedback == "files exists in local":
+            print("[" + sessions[conn].username + "] file exists in local")
+            filename = args[0].split("/")[-1]
+
             check_if_file_already_exists(conn, filename)
+
             can_continue = receive_message(conn)
             if can_continue == "Y":
+                print("[" + curr_session.username + "] 'Y': can receive file")
                 f = open(curr_session.current_directory + "/" + filename, 'wb')
                 aux = conn.recv(1024)
                 while aux:
@@ -156,11 +163,14 @@ def manage_command_line(comm, args, conn):
                     aux = conn.recv(1024)
                     if aux.endswith(bytes("\r\n", 'utf-8')):
                         break
-                print("recebeu")
+                print("[" + curr_session.username + "] File received")
+            else:
+                print("[" + curr_session.username + "] 'N': can not receive file")
+                print("[" + curr_session.username + "] reply: ok")
             conn.sendall(bytes("ok\r\n", 'utf-8'))
-        except FileNotFoundError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+        else:
+            print("[" + sessions[conn].username + "] Error: file does not exists in local")
+            pass
 
     elif comm == "delete":
         filename = args[0]
@@ -189,6 +199,7 @@ def control_connection(conn, client_addr):
 
             if command == "close" or command == "quit":
                 print("[" + username + "] disconnected!")
+                sessions.pop(conn)
                 conn.close()
                 break
             else:
