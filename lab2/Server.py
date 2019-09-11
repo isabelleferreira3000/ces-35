@@ -38,16 +38,16 @@ def check_authentication(conn):
 
 
 def check_if_file_already_exists(conn, filename):
-    aux = ""
+    name = filename.rsplit('/', 1)[-1]
+    path = ""
 
     if len(filename.rsplit('/', 1)) == 2:
-        aux = filename.rsplit('/', 1)[0]
-        filename = filename.rsplit('/', 1)[1]
-        if aux.startswith("/"):
-            aux = aux[1:]
+        path = filename.rsplit('/', 1)[0]
+        if path.startswith("/"):
+            path = path[1:]
 
-    files = os.listdir(sessions[conn].current_directory + "/" + aux)
-    if filename in files:
+    files = os.listdir(sessions[conn].current_directory + "/" + path)
+    if name in files:
         print("[" + sessions[conn].username + "] reply: file exists")
         conn.sendall(bytes("file already exists\r\n", 'utf-8'))
         return True
@@ -96,9 +96,9 @@ def manage_command_line(comm, args, conn):
             conn.sendall(bytes(str(os.listdir(curr_session.current_directory)) + "\r\n", 'utf-8'))
 
     elif comm == "pwd":
-        dirpath = curr_session.current_directory
-        print("[" + curr_session.username + "] reply: " + dirpath)
-        conn.sendall(bytes(dirpath + "\r\n", 'utf-8'))
+        path = curr_session.current_directory
+        print("[" + curr_session.username + "] reply: " + path)
+        conn.sendall(bytes(path + "\r\n", 'utf-8'))
 
     # Directory manipulation
     elif comm == "mkdir":
@@ -125,14 +125,14 @@ def manage_command_line(comm, args, conn):
 
     # File Handling
     elif comm == "get":
+        filename = args[0]
         # CHECK IF THE FILE CLIENT WANTS EXISTS
-        if check_if_file_already_exists(conn, args[0]):
+        if check_if_file_already_exists(conn, filename):
 
             feedback = receive_message(conn)
 
             if feedback == "can get":
                 print("[" + curr_session.username + "] 'Y': can send file")
-                filename = args[0]
                 file = open(curr_session.current_directory + "/" + filename, "rb")
                 aux = file.read(1024)
                 while aux:
@@ -144,13 +144,13 @@ def manage_command_line(comm, args, conn):
                 print("[" + curr_session.username + "] 'N': can not send file")
 
     elif comm == "put":
+
         # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
         feedback = receive_message(conn)
 
         if feedback == "files exists in local":
             print("[" + sessions[conn].username + "] file exists in local")
             filename = args[0].split("/")[-1]
-
             check_if_file_already_exists(conn, filename)
 
             can_continue = receive_message(conn)

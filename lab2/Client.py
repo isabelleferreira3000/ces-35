@@ -48,7 +48,9 @@ def receive_message(conn):
 
 def handle_feedback(comm, text):
 
-    if comm == "cd":
+    if comm == "cd" or \
+            comm == "mkdir" or comm == "rmdir" or \
+            comm == "get" or comm == "put" or comm == "delete":
         if text != "ok":
             print(text)
 
@@ -66,39 +68,16 @@ def handle_feedback(comm, text):
     elif comm == "pwd":
         print(text)
 
-    # Directory manipulation
-    elif comm == "mkdir":
-        if text != "ok":
-            print(text)
 
-    elif comm == "rmdir":
-        if text != "ok":
-            print(text)
-
-    # File Handling
-    elif comm == "get":
-        if text != "ok":
-            print(text)
-
-    elif comm == "put":
-        if text != "ok":
-            print(text)
-
-    elif comm == "delete":
-        if text != "ok":
-            print(text)
-
-
-def check_if_file_already_exists(filename):
-    name = filename.rsplit('/', 1)[-1]
+def check_if_file_already_exists(path_filename):
+    name = path_filename.rsplit('/', 1)[-1]
     path = ""
-    if len(filename.rsplit('/', 1)) == 2:
-        path = filename.rsplit('/', 1)[0]
+    if len(path_filename.rsplit('/', 1)) == 2:
+        path = path_filename.rsplit('/', 1)[0]
         if path.startswith("/"):
             path = path[1:]
 
     files = os.listdir(os.getcwd() + "/" + path)
-    print(files)
     if name in files:
         return True
     else:
@@ -115,8 +94,9 @@ if __name__ == "__main__":
         if is_a_valid_command_line(command, command_args):
 
             if command == "open":
-                # if command_args[0] == "localhost:2121":
-                if command_args[0] == "a":
+                server = command_args[0]
+
+                if server == "localhost:2121":
                     # Create a TCP/IP socket and connect the socket to the port where the server is listening
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     server_address = ('localhost', 2121)
@@ -151,6 +131,7 @@ if __name__ == "__main__":
                                     sock.close()
                                     finished = True
                                     break
+
                                 elif command == "get":
                                     # CHECK IF THE FILE CLIENT WANTS EXISTS IN SERVER
                                     feedback = receive_message(sock)
@@ -177,9 +158,8 @@ if __name__ == "__main__":
                                                     print("Invalid answer. Please, answer with Y or N.")
 
                                         if can_get:
-                                            file_name = command_args[0].split("/")[-1]
                                             sock.sendall(bytes("can get\r\n", 'utf-8'))
-                                            f = open(str(file_name), 'wb')
+                                            f = open(str(filename), 'wb')
                                             aux = sock.recv(1024)
                                             while aux:
                                                 f.write(aux)
@@ -194,8 +174,10 @@ if __name__ == "__main__":
                                         print("Error: file does not exists in server")
 
                                 elif command == "put":
+                                    filename = command_args[0]
+
                                     # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
-                                    file_exists_in_local = check_if_file_already_exists(command_args[0])
+                                    file_exists_in_local = check_if_file_already_exists(filename)
 
                                     if file_exists_in_local:
                                         sock.sendall(bytes("files exists in local\r\n", 'utf-8'))
@@ -221,7 +203,7 @@ if __name__ == "__main__":
                                             sock.sendall(bytes("Y\r\n", 'utf-8'))
 
                                         if can_receive:
-                                            filename = command_args[0].rsplit('/', 1)[-1]
+                                            filename = filename.rsplit('/', 1)[-1]
                                             filepath = ""
                                             if len(filename.rsplit('/', 1)) == 2:
                                                 filepath = filename.rsplit('/', 1)[0]
@@ -263,4 +245,3 @@ if __name__ == "__main__":
                 finished = True
             else:
                 print("Error: not connected!")
-                pass
