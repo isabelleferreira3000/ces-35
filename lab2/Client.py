@@ -107,7 +107,8 @@ if __name__ == "__main__":
         if is_a_valid_command_line(command, command_args):
 
             if command == "open":
-                if command_args[0] == "localhost:2121":
+                # if command_args[0] == "localhost:2121":
+                if command_args[0] == "a":
                     # Create a TCP/IP socket and connect the socket to the port where the server is listening
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     server_address = ('localhost', 2121)

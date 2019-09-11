@@ -95,20 +95,23 @@ def manage_command_line(comm, args, conn):
         dirname = args[0]
         try:
             os.mkdir(curr_session.current_directory + "/" + dirname)
+            print("[" + curr_session.username + "] reply: ok")
             conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
-        except OSError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+
+        except OSError:
+            print("[" + curr_session.username + "] reply: Error: directory already exists in server")
+            conn.sendall(bytes("Error: directory already exists in server \r\n", 'utf-8'))
 
     elif comm == "rmdir":
         dirname = args[0]
 
         try:
             shutil.rmtree(curr_session.current_directory + "/" + dirname)
+            print("[" + curr_session.username + "] reply: ok")
             conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
-        except OSError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+        except OSError:
+            print("[" + curr_session.username + "] reply: Error: directory does not exists in server")
+            conn.sendall(bytes("Error: directory does not exists in server \r\n", 'utf-8'))
 
     # File Handling
     elif comm == "get":
