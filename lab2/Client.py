@@ -176,10 +176,6 @@ if __name__ == "__main__":
                                         else:
                                             sock.sendall(bytes("can not get\r\n", 'utf-8'))
 
-                                        # print("antes de receber o feedback")
-                                        # feedback = receive_message(sock)
-                                        # print("depois de receber o feedback")
-                                        # handle_feedback(command, feedback)
                                     else:
                                         print("Error: file does not exists in server")
 

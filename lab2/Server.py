@@ -49,6 +49,10 @@ def check_if_file_already_exists(conn, filename):
 
 def manage_command_line(comm, args, conn):
     curr_session = sessions[conn]
+    if len(args) == 0:
+        print("[" + curr_session.username + "] request: " + comm)
+    else:
+        print("[" + curr_session.username + "] request: " + comm + " " + args[0])
 
     # Directory Browsing and Listing
     if comm == "cd":
@@ -68,13 +72,15 @@ def manage_command_line(comm, args, conn):
         if len(args) != 0:
             dirname = args[0]
             try:
-                print(os.listdir(curr_session.current_directory + "/" + dirname))
+                print("[" + curr_session.username + "] reply: " +
+                      str(os.listdir(curr_session.current_directory + "/" + dirname)))
                 conn.sendall(bytes(str(os.listdir(curr_session.current_directory + "/" + dirname)) + "\r\n", 'utf-8'))
-            except FileNotFoundError as error:
-                print(error)
-                conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+
+            except FileNotFoundError:
+                print("[" + curr_session.username + "] reply: Error: directory does not exists in server")
+                conn.sendall(bytes("Error: directory does not exists in server \r\n", 'utf-8'))
         else:
-            print(os.listdir(curr_session.current_directory))
+            print("[" + curr_session.username + "] reply: " + str(os.listdir(curr_session.current_directory)))
             conn.sendall(bytes(str(os.listdir(curr_session.current_directory)) + "\r\n", 'utf-8'))
 
     elif comm == "pwd":
@@ -156,7 +162,7 @@ def manage_command_line(comm, args, conn):
 
 
 def control_connection(conn, client_addr):
-    print("control connection from" + str(client_addr))
+    print("Connection attempt from" + str(client_addr))
 
     is_correct_authentication, username = check_authentication(conn)
     conn.sendall(bytes(str(is_correct_authentication) + "\r\n", 'utf-8'))
@@ -171,6 +177,7 @@ def control_connection(conn, client_addr):
             command_args = command_line.split(" ")[1:]
 
             if command == "close" or command == "quit":
+                print("[" + username + "] disconnected!")
                 conn.close()
                 break
             else:
