@@ -63,10 +63,12 @@ def manage_command_line(comm, args, conn):
             os.chdir(curr_path + "/" + dirname)
             curr_path = os.getcwd()
             curr_session.current_directory = curr_path
+            print("[" + curr_session.username + "] in " + curr_path + ". Reply: ok")
             conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
-        except FileNotFoundError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+
+        except FileNotFoundError:
+            print("[" + curr_session.username + "] reply: Error: directory does not exists in server")
+            conn.sendall(bytes("Error: directory does not exists in server \r\n", 'utf-8'))
 
     elif comm == "ls":
         if len(args) != 0:
