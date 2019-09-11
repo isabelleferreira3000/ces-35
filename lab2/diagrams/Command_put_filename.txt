@@ -1,0 +1,32 @@
+title Command: put <filename>
+
+entryspacing 0.6
+Server<-Client:put <filename>
+
+note over Client: if file exists in local
+
+Server<-Client:files exists in local
+
+note over Server: if file does not exist in server yet
+
+Server-->Client:reply: "file does not exist in server yet"
+
+Server<-Client:file
+
+note over Server: if file already exists in server
+
+Server-->Client:reply: "file already exists in server"
+
+Server<-Client:can overwrite file / can not overwrite file
+
+note over Server: if can overwrite file
+
+Server<-Client:file
+
+note over Server: if can not overwrite file
+
+Server-->Client:reply: "ok"
+
+note over Client: if file does not exist in local
+
+Server<-Client:files does not exists in local

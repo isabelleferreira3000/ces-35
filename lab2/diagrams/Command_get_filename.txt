@@ -1,0 +1,17 @@
+title Command: get <filename>
+
+Server<-Client:get <filename>
+
+note over Server: if file exists in server
+
+Server-->Client:reply: "file exists"
+
+Server<-Client:can overwrite file / can not overwrite file
+
+note over Server: if can overwrite file
+
+Server-->Client:reply: file
+
+note over Server: if file does not exist in server
+
+Server-->Client:reply: "file does not exists"

@@ -1,0 +1,11 @@
+title Command: ls [dirname]
+
+Server<-Client:ls [dirname]
+
+note over Server: if directory exists
+
+Server-->Client:reply: list of files
+
+note over Server: if directory does not exist
+
+Server-->Client:reply: "Error: directory does not exists in server"

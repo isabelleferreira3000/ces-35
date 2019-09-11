@@ -1,0 +1,15 @@
+title Connection Process
+
+Server<-Client:Connection attempt
+
+Server-->Client:reply: "user"
+Server<--Client:username
+Server-->Client:reply: "password"
+Server<--Client:password
+
+Server->Credentials:check credentials
+Server-->Client:reply: connected / not connected
+
+note over Sessions,Server: if connected
+
+Server->Sessions: add client's session

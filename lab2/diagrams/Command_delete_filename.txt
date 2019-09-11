@@ -1,0 +1,11 @@
+title Command: delete <filename>
+
+Server<-Client:delete <filename>
+
+note over Server: if file exists in server
+
+Server-->Client:reply: "ok"
+
+note over Server: if file does not exists in server
+
+Server-->Client:reply: "Error: file does not exists in server"

@@ -1,0 +1,13 @@
+title Command: cd <dirname>
+
+Server<-Client:cd <dirname>
+
+note over Server: if directory exists
+
+Server-->Client:reply: "ok"
+
+Server->Sessions:client current directory's update
+
+note over Server: if directory does not exist
+
+Server-->Client:reply: "Error: directory does not exists in server"
