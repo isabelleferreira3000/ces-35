@@ -87,7 +87,7 @@ def manage_command_line(comm, args, conn):
 
     elif comm == "pwd":
         dirpath = curr_session.current_directory
-        print(dirpath)
+        print("[" + curr_session.username + "] reply: " + dirpath)
         conn.sendall(bytes(dirpath + "\r\n", 'utf-8'))
 
     # Directory manipulation
