@@ -74,7 +74,7 @@ def manage_command_line(comm, args, conn):
             curr_path = os.getcwd()
             curr_session.current_directory = curr_path
             print("[" + curr_session.username + "] in " + curr_path + ". Reply: ok")
-            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
+            conn.sendall(bytes("ok\r\n", 'utf-8'))
 
         except FileNotFoundError:
             print("[" + curr_session.username + "] reply: Error: directory does not exists in server")
@@ -106,7 +106,7 @@ def manage_command_line(comm, args, conn):
         try:
             os.mkdir(curr_session.current_directory + "/" + dirname)
             print("[" + curr_session.username + "] reply: ok")
-            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
+            conn.sendall(bytes("ok\r\n", 'utf-8'))
 
         except OSError:
             print("[" + curr_session.username + "] reply: Error: directory already exists in server")
@@ -118,7 +118,7 @@ def manage_command_line(comm, args, conn):
         try:
             shutil.rmtree(curr_session.current_directory + "/" + dirname)
             print("[" + curr_session.username + "] reply: ok")
-            conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
+            conn.sendall(bytes("ok\r\n", 'utf-8'))
         except OSError:
             print("[" + curr_session.username + "] reply: Error: directory does not exists in server")
             conn.sendall(bytes("Error: directory does not exists in server \r\n", 'utf-8'))
@@ -176,10 +176,13 @@ def manage_command_line(comm, args, conn):
         filename = args[0]
         try:
             os.remove(curr_session.current_directory + "/" + filename)
+            print("[" + curr_session.username + "] file deleted")
+            print("[" + curr_session.username + "] reply: ok")
             conn.sendall(bytes("ok" + "\r\n", 'utf-8'))
-        except OSError as error:
-            print(error)
-            conn.sendall(bytes(str(error) + "\r\n", 'utf-8'))
+
+        except OSError:
+            print("[" + curr_session.username + "] reply: Error: file does not exists in server")
+            conn.sendall(bytes("Error: file does not exists in server \r\n", 'utf-8'))
 
 
 def control_connection(conn, client_addr):
