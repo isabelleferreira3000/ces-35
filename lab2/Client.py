@@ -107,126 +107,130 @@ if __name__ == "__main__":
         if is_a_valid_command_line(command, command_args):
 
             if command == "open":
-                # Create a TCP/IP socket and connect the socket to the port where the server is listening
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                server_address = ('localhost', 2121)
-                sock.connect(server_address)
+                if command_args[0] == "localhost:2121":
+                    # Create a TCP/IP socket and connect the socket to the port where the server is listening
+                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    server_address = ('localhost', 2121)
+                    sock.connect(server_address)
 
-                # authentication
-                username = input(receive_message(sock) + " ")
-                sock.sendall(bytes(username + "\r\n", 'utf-8'))
-                password = input(receive_message(sock) + " ")
-                sock.sendall(bytes(password + "\r\n", 'utf-8'))
+                    # authentication
+                    username = input(receive_message(sock) + " ")
+                    sock.sendall(bytes(username + "\r\n", 'utf-8'))
+                    password = input(receive_message(sock) + " ")
+                    sock.sendall(bytes(password + "\r\n", 'utf-8'))
 
-                authentication = receive_message(sock)
-                if authentication == "True":
-                    print("connected!")
+                    authentication = receive_message(sock)
+                    if authentication == "True":
+                        print("connected!")
 
-                    while True:
-                        command, command_args, command_line = get_command_line()
-                        if is_a_valid_command_line(command, command_args):
+                        while True:
+                            command, command_args, command_line = get_command_line()
+                            if is_a_valid_command_line(command, command_args):
 
-                            command_line = command_line + "\r\n"
+                                command_line = command_line + "\r\n"
 
-                            if command == "open":
-                                print("Error: already connected")
+                                if command == "open":
+                                    print("Error: already connected")
 
-                            else:
-                                sock.sendall(bytes(command_line, 'utf-8'))
+                                else:
+                                    sock.sendall(bytes(command_line, 'utf-8'))
 
-                            if command == "close":
-                                sock.close()
-                                break
-                            elif command == "quit":
-                                sock.close()
-                                finished = True
-                                break
-                            elif command == "get":
-                                # CHECK IF THE FILE CLIENT WANTS EXISTS IN SERVER
-                                feedback = receive_message(sock)
+                                if command == "close":
+                                    sock.close()
+                                    break
+                                elif command == "quit":
+                                    sock.close()
+                                    finished = True
+                                    break
+                                elif command == "get":
+                                    # CHECK IF THE FILE CLIENT WANTS EXISTS IN SERVER
+                                    feedback = receive_message(sock)
 
-                                if feedback == "file already exists":
-                                    # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
-                                    already_exists = check_if_file_already_exists(command_args[0])
+                                    if feedback == "file already exists":
+                                        # CHECK IF THE FILE CLIENT WANTS EXISTS IN LOCAL
+                                        already_exists = check_if_file_already_exists(command_args[0])
 
-                                    can_get = True
-                                    if already_exists:
-                                        print("File already exists. Do you want to overwrite local file? [Y/N]")
+                                        can_get = True
+                                        if already_exists:
+                                            print("File already exists. Do you want to overwrite local file? [Y/N]")
+                                            while True:
+                                                answer = input()
+                                                if answer.upper() == "Y":
+                                                    break
+                                                elif answer.upper() == "N":
+                                                    can_get = False
+                                                    break
+                                                else:
+                                                    print("Invalid answer. Please, answer with Y or N.")
+
+                                        if can_get:
+                                            sock.sendall(bytes("can get\r\n", 'utf-8'))
+                                            f = open(str(command_args[0]), 'wb')
+                                            aux = sock.recv(1024)
+                                            while aux:
+                                                f.write(aux)
+                                                aux = sock.recv(1024)
+                                                if aux.endswith(bytes("\r\n", 'utf-8')):
+                                                    break
+                                            print("recebeu")
+                                        else:
+                                            sock.sendall(bytes("can not get\r\n", 'utf-8'))
+
+                                        # print("antes de receber o feedback")
+                                        # feedback = receive_message(sock)
+                                        # print("depois de receber o feedback")
+                                        # handle_feedback(command, feedback)
+                                    else:
+                                        print("Error: file does not exists in server")
+
+                                elif command == "put":
+                                    file_exists_in_local = check_if_file_already_exists(command_args[0])
+
+                                    feedback = receive_message(sock)
+                                    can_receive = False
+
+                                    if feedback == "file already exists":
+                                        print("File already exists. Do you want to overwrite remote file? [Y/N]")
                                         while True:
                                             answer = input()
                                             if answer.upper() == "Y":
+                                                sock.sendall(bytes("Y\r\n", 'utf-8'))
+                                                can_receive = True
                                                 break
                                             elif answer.upper() == "N":
-                                                can_get = False
+                                                sock.sendall(bytes("N\r\n", 'utf-8'))
                                                 break
                                             else:
                                                 print("Invalid answer. Please, answer with Y or N.")
-
-                                    if can_get:
-                                        sock.sendall(bytes("can get\r\n", 'utf-8'))
-                                        f = open(str(command_args[0]), 'wb')
-                                        aux = sock.recv(1024)
-                                        while aux:
-                                            f.write(aux)
-                                            aux = sock.recv(1024)
-                                            if aux.endswith(bytes("\r\n", 'utf-8')):
-                                                break
-                                        print("recebeu")
                                     else:
-                                        sock.sendall(bytes("can not get\r\n", 'utf-8'))
+                                        can_receive = True
+                                        sock.sendall(bytes("Y\r\n", 'utf-8'))
 
-                                    # print("antes de receber o feedback")
-                                    # feedback = receive_message(sock)
-                                    # print("depois de receber o feedback")
-                                    # handle_feedback(command, feedback)
-                                else:
-                                    print("Error: file does not exists in server")
-
-                            elif command == "put":
-                                file_exists_in_local = check_if_file_already_exists(command_args[0])
-
-                                feedback = receive_message(sock)
-                                can_receive = False
-
-                                if feedback == "file already exists":
-                                    print("File already exists. Do you want to overwrite remote file? [Y/N]")
-                                    while True:
-                                        answer = input()
-                                        if answer.upper() == "Y":
-                                            sock.sendall(bytes("Y\r\n", 'utf-8'))
-                                            can_receive = True
-                                            break
-                                        elif answer.upper() == "N":
-                                            sock.sendall(bytes("N\r\n", 'utf-8'))
-                                            break
-                                        else:
-                                            print("Invalid answer. Please, answer with Y or N.")
-                                else:
-                                    can_receive = True
-                                    sock.sendall(bytes("Y\r\n", 'utf-8'))
-
-                                if can_receive:
-                                    file = open(command_args[0], "rb")
-                                    aux = file.read(1024)
-                                    while aux:
-                                        sock.send(aux)
+                                    if can_receive:
+                                        file = open(command_args[0], "rb")
                                         aux = file.read(1024)
-                                    sock.sendall(bytes("\r\n", 'utf-8'))
-                                    print("enviou")
+                                        while aux:
+                                            sock.send(aux)
+                                            aux = file.read(1024)
+                                        sock.sendall(bytes("\r\n", 'utf-8'))
+                                        print("enviou")
 
-                                feedback = receive_message(sock)
-                                handle_feedback(command, feedback)
+                                    feedback = receive_message(sock)
+                                    handle_feedback(command, feedback)
 
-                            elif command != "open":
-                                feedback = receive_message(sock)
-                                handle_feedback(command, feedback)
+                                elif command != "open":
+                                    feedback = receive_message(sock)
+                                    handle_feedback(command, feedback)
+
+                    else:
+                        print("Authentication error: incorrect username or password")
+                        sock.close()
 
                 else:
-                    print("Authentication error: incorrect username or password")
-                    sock.close()
+                    print("Error: server not found. Try 'open localhost:2121'")
 
             elif command == "quit":
                 finished = True
             else:
-                print("not connected")
+                print("Error: not connected!")
                 pass
