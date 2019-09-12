@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5a1612fb-a2e6-4046-9bfe-e30c5bebf249" name="Default Changelist" comment="" />
+    <list default="true" id="5a1612fb-a2e6-4046-9bfe-e30c5bebf249" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/diagrams/Connection_Process.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/diagrams/Connection_Process.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/cd1.png" beforeDir="false" afterPath="$PROJECT_DIR$/prints/cd1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/close1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/ls.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/open1.png" beforeDir="false" afterPath="$PROJECT_DIR$/prints/open1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/open2.png" beforeDir="false" afterPath="$PROJECT_DIR$/prints/open2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/open3.png" beforeDir="false" afterPath="$PROJECT_DIR$/prints/open3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/pwd.png" beforeDir="false" afterPath="$PROJECT_DIR$/prints/pwd.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/quit1.png" beforeDir="false" afterPath="$PROJECT_DIR$/prints/quit1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prints/quit2.png" beforeDir="false" afterPath="$PROJECT_DIR$/prints/quit2.png" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,8 +47,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="140" column="52" lean-forward="true" selection-start-line="135" selection-start-column="16" selection-end-line="140" selection-end-column="52" />
+            <state relative-caret-position="30">
+              <caret line="11" selection-start-line="11" selection-end-line="19" selection-end-column="27" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -46,8 +59,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="215" column="57" selection-start-line="215" selection-start-column="57" selection-end-line="215" selection-end-column="57" />
+            <state relative-caret-position="225">
+              <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -87,6 +100,7 @@
       <find>ok</find>
       <find>command_args[0]</find>
       <find>close</find>
+      <find>shutil</find>
       <find>open</find>
     </findStrings>
   </component>
@@ -201,7 +215,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="57440000" />
+    <option name="totallyTimeSpent" value="62066000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
@@ -334,8 +348,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="215" column="57" selection-start-line="215" selection-start-column="57" selection-end-line="215" selection-end-column="57" />
+        <state relative-caret-position="225">
+          <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
@@ -344,8 +358,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="140" column="52" lean-forward="true" selection-start-line="135" selection-start-column="16" selection-end-line="140" selection-end-column="52" />
+        <state relative-caret-position="30">
+          <caret line="11" selection-start-line="11" selection-end-line="19" selection-end-column="27" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

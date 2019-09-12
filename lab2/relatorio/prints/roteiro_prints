@@ -1,0 +1,40 @@
+----- cd pasta
+----- cd pasta nao existente
+
+----- ls
+----- ls pasta
+----- ls pasta q nao existe
+
+----- pwd
+
+----- mkdir
+----- mkdir pasta já existente
+
+----- rmdir
+----- rmdir pasta não existente
+
+----- get ok
+----- get arquivo nao existente no server
+----- get arquivo existente no local overwrite
+----- get arquivo existente no local nao overwrite
+
+----- put ok
+----- put arquivo nao existente no local
+----- put arquivo existente no server overwrite
+----- put arquivo existente no server nao overwrite
+
+----- delete ok
+----- delete arquivo nao existente
+
+----- close
+
+----- open ok
+----- open já conectado
+----- open com nome errado
+
+----- quit conectado
+----- quit nao conectado
+
+----- comandos invalidos
+----- comandos nao conectado
+----- comandos com numero errado de argumentos
