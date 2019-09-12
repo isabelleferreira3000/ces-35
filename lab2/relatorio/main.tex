@@ -65,7 +65,15 @@ FTP, Redes de computadores, Cliente-Servidor
 
 A linguagem de programação utilizada foi Python 3, com o auxílio das bibliotecas: \textit{socket} para comunicação entre os processos, \textit{thread} para a criação das threads para cada cliente conectado ao servidor, e \textit{shutil} e \textit{os} para os comandos de manipulação de diretórios e arquivos.
 
+O código do Servidor pode ser simplificadamente explicado como a seguir. Ele se trata, inicialmente, de um loop infinito esperando tentativas de conexões advindas de clientes. Cada tentativa de conexão inicia uma thread que lida com cada sessão em particular. Ao chegar essa tentativa de conexão, o servidor começa, então, o processo de autenticação do cliente. Se o cliente fornecer corretamente seu nome de usuário e senha, inicia-se, por fim, outro loop infinito, dessa vez a espera de comandos digitados pelos usuários nos processos clientes. Caso o cliente falhe em sua antenticação, a conexão é encerrada. Cada comando que chega é devidamente lidado de acordo com suas peculiaridades.
+
+Já o código do Cliente, de forma superficial, trata-se de um loop infinito esperando comandos advindos do usuário. Caso esteja conectado ao servidor, cada linha de comando é enviado para o servidor e ambos os processos passam a lidar com os resultados esperados. Caso esteja desconectado, o cliente é incapaz de realizar qualquer comando, exceto pelo de conectar-se ao servidor (comando \textit{open <server>}). Ao tentar se conectar ao servidor, o usuário é requisitado de digitar o nome de usuário e senha, para ocorrer a autenticação por parte do servidor.
+
+Como cada comando é implementado, além de outras funcionalidades auxiliares foram melhores abordados nas subsessões a seguir.
+
 \subsection{Funções auxiliares}
+
+Cada mensagem trocada pelo cliente e servidor é recebida através da função a seguir. Essa função recebe a mensagem em pacotes de tamanho 16, concatenando-os para formar a mensagem completa. O fim da mensagem é identificado a partir de um \textit{carriage return} e \textit{line feed}.
 
 \begin{lstlisting}
 # Server and Client code
@@ -79,6 +87,8 @@ def receive_message(conn):
     message_received = message_received.split("\r\n")[0]
     return message_received
 \end{lstlisting}
+
+A autenticação realizada no servidor foi apresentada a seguir. Ela se resume a comparação dos dados fornecidos pelo cliente aos armazenados em um mapa com nomes de usuários e senhas. Esse mapa é construído a partir da leitura de um arquivo de credenciais, e seu código também é apresentado a seguir.
 
 \begin{lstlisting}
 # Server code
@@ -109,38 +119,12 @@ def create_credentials():
 		credentials[username] = password
 \end{lstlisting}
 
-\begin{lstlisting}
-# Client code
-def get_command_line():
-	line_input = input(">> ")
-	comm = line_input.split(" ")[0]
-	args = line_input.split(" ")[1:]
-	return comm, args, line_input
-\end{lstlisting}
+As linhas de comando são digitadas pelo usuário no código do cliente, e essas linhas também são enviadas ao servidor. O parseamento dos comandos para serem lidados posteriormente são feitos através da função \textit{split} do Python, e teve seu código apresentado a seguir. 
 
 \begin{lstlisting}
-# Client code
-def handle_feedback(comm, text):
-	if comm == "cd" or \
-	    comm == "mkdir" or comm == "rmdir" or \
-	    comm == "get" or comm == "put" or \
-	    comm == "delete":
-		if text != "ok":
-			print(text)
-
-	elif comm == "ls":
-		try:
-			aux = text.split("[")[1:]
-			aux = aux[0].split("]")[0]
-			aux = aux.split(", ")
-			for x in aux:
-				x = x.split("'")[1]
-				print(x)
-		except:
-			print(text)
-
-	elif comm == "pwd":
-		print(text)
+# Server and Client code
+command = command_line.split(" ")[0]
+args = command_line.split(" ")[1:]
 \end{lstlisting}
 
 \subsection{Navegação e listagem de diretórios}

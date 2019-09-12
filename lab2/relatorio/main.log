@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.3.6)  11 SEP 2019 21:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.3.6)  11 SEP 2019 21:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1084,289 +1084,285 @@ LaTeX Info: Redefining \nameref on input line 42.
 Package babel Info: Redefining portuges shorthand "|
 (babel)             in language  on input line 64.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 68.
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 70.
+(babel)             in language  on input line 74.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 78.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 146.
+(babel)             in language  on input line 123.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 159.
-Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 159.
+(babel)             in language  on input line 123.
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 189.
+(babel)             in language  on input line 130.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 215.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+(babel)             in language  on input line 173.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 278.
+(babel)             in language  on input line 199.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 278.
+(babel)             in language  on input line 243.
+Package babel Info: Redefining portuges shorthand "|
+(babel)             in language  on input line 243.
  [2]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 356.
+(babel)             in language  on input line 340.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 366.
+(babel)             in language  on input line 350.
 
-<diagrams/Command_cd_dirname.png, id=257, 691.58376pt x 433.62pt>
+<diagrams/Command_cd_dirname.png, id=213, 691.58376pt x 433.62pt>
 File: diagrams/Command_cd_dirname.png Graphic file (type png)
 
 <use diagrams/Command_cd_dirname.png>
-Package pdftex.def Info: diagrams/Command_cd_dirname.png used on input line 370
+Package pdftex.def Info: diagrams/Command_cd_dirname.png used on input line 354
 .
 (pdftex.def)             Requested size: 207.47672pt x 130.087pt.
 
-<diagrams/Command_ls_dirname.png, id=259, 502.87875pt x 391.4625pt>
+<diagrams/Command_ls_dirname.png, id=215, 502.87875pt x 391.4625pt>
 File: diagrams/Command_ls_dirname.png Graphic file (type png)
 
 <use diagrams/Command_ls_dirname.png>
-Package pdftex.def Info: diagrams/Command_ls_dirname.png used on input line 377
+Package pdftex.def Info: diagrams/Command_ls_dirname.png used on input line 361
 .
 (pdftex.def)             Requested size: 201.14793pt x 156.58221pt.
 
-<diagrams/Command_pwd.png, id=260, 313.17pt x 233.87375pt>
+<diagrams/Command_pwd.png, id=216, 313.17pt x 233.87375pt>
 File: diagrams/Command_pwd.png Graphic file (type png)
 
 <use diagrams/Command_pwd.png>
-Package pdftex.def Info: diagrams/Command_pwd.png used on input line 384.
+Package pdftex.def Info: diagrams/Command_pwd.png used on input line 368.
 (pdftex.def)             Requested size: 125.26576pt x 93.54782pt.
 
-<diagrams/Command_mkdir_dirname.png, id=261, 502.87875pt x 391.4625pt>
+<diagrams/Command_mkdir_dirname.png, id=217, 502.87875pt x 391.4625pt>
 File: diagrams/Command_mkdir_dirname.png Graphic file (type png)
 
 <use diagrams/Command_mkdir_dirname.png>
 Package pdftex.def Info: diagrams/Command_mkdir_dirname.png used on input line 
-391.
+375.
 (pdftex.def)             Requested size: 201.14793pt x 156.58221pt.
 
-<diagrams/Command_rmdir_dirname.png, id=262, 502.87875pt x 391.4625pt>
+<diagrams/Command_rmdir_dirname.png, id=218, 502.87875pt x 391.4625pt>
 File: diagrams/Command_rmdir_dirname.png Graphic file (type png)
 
 <use diagrams/Command_rmdir_dirname.png>
 Package pdftex.def Info: diagrams/Command_rmdir_dirname.png used on input line 
-398.
+382.
 (pdftex.def)             Requested size: 201.14793pt x 156.58221pt.
 
-<diagrams/Command_get_filename.png, id=263, 461.725pt x 532.99126pt>
+<diagrams/Command_get_filename.png, id=219, 461.725pt x 532.99126pt>
 File: diagrams/Command_get_filename.png Graphic file (type png)
 
 <use diagrams/Command_get_filename.png>
-Package pdftex.def Info: diagrams/Command_get_filename.png used on input line 4
-05.
+Package pdftex.def Info: diagrams/Command_get_filename.png used on input line 3
+89.
 (pdftex.def)             Requested size: 184.68672pt x 213.19272pt.
 
-<diagrams/Command_put_filename.png, id=264, 547.04375pt x 738.76pt>
+<diagrams/Command_put_filename.png, id=220, 547.04375pt x 738.76pt>
 File: diagrams/Command_put_filename.png Graphic file (type png)
 
 <use diagrams/Command_put_filename.png>
-Package pdftex.def Info: diagrams/Command_put_filename.png used on input line 4
-12.
+Package pdftex.def Info: diagrams/Command_put_filename.png used on input line 3
+96.
 (pdftex.def)             Requested size: 218.81361pt x 295.49875pt.
 
-<diagrams/Command_delete_filename.png, id=265, 480.79625pt x 391.4625pt>
+<diagrams/Command_delete_filename.png, id=221, 480.79625pt x 391.4625pt>
 File: diagrams/Command_delete_filename.png Graphic file (type png)
 
 <use diagrams/Command_delete_filename.png>
 Package pdftex.def Info: diagrams/Command_delete_filename.png used on input lin
-e 419.
+e 403.
 (pdftex.def)             Requested size: 192.31508pt x 156.58221pt.
 
-<diagrams/Command_close.png, id=266, 494.84875pt x 291.0875pt>
+<diagrams/Command_close.png, id=222, 494.84875pt x 291.0875pt>
 File: diagrams/Command_close.png Graphic file (type png)
 
 <use diagrams/Command_close.png>
-Package pdftex.def Info: diagrams/Command_close.png used on input line 426.
+Package pdftex.def Info: diagrams/Command_close.png used on input line 410.
 (pdftex.def)             Requested size: 197.93599pt x 116.43292pt.
 
-<diagrams/Command_open_server.png, id=267, 692.5875pt x 660.4675pt>
+<diagrams/Command_open_server.png, id=223, 692.5875pt x 660.4675pt>
 File: diagrams/Command_open_server.png Graphic file (type png)
 
 <use diagrams/Command_open_server.png>
-Package pdftex.def Info: diagrams/Command_open_server.png used on input line 43
-3.
+Package pdftex.def Info: diagrams/Command_open_server.png used on input line 41
+7.
 (pdftex.def)             Requested size: 277.03009pt x 264.18231pt.
 
-<diagrams/Command_quit.png, id=268, 494.84875pt x 291.0875pt>
+<diagrams/Command_quit.png, id=224, 494.84875pt x 291.0875pt>
 File: diagrams/Command_quit.png Graphic file (type png)
 
 <use diagrams/Command_quit.png>
-Package pdftex.def Info: diagrams/Command_quit.png used on input line 440.
+Package pdftex.def Info: diagrams/Command_quit.png used on input line 424.
 (pdftex.def)             Requested size: 197.93599pt x 116.43292pt.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 445.
+(babel)             in language  on input line 429.
 
-<prints/cd1.png, id=269, 774.895pt x 383.4325pt>
+<prints/cd1.png, id=225, 774.895pt x 383.4325pt>
 File: prints/cd1.png Graphic file (type png)
  <use prints/cd1.png>
-Package pdftex.def Info: prints/cd1.png used on input line 449.
+Package pdftex.def Info: prints/cd1.png used on input line 433.
 (pdftex.def)             Requested size: 232.47029pt x 115.03062pt.
 
-<prints/ls1.png, id=270, 769.87625pt x 279.0425pt>
+<prints/ls1.png, id=226, 769.87625pt x 279.0425pt>
 File: prints/ls1.png Graphic file (type png)
  <use prints/ls1.png>
-Package pdftex.def Info: prints/ls1.png used on input line 456.
+Package pdftex.def Info: prints/ls1.png used on input line 440.
 (pdftex.def)             Requested size: 230.96466pt x 83.7134pt.
 
-<prints/pwd.png, id=271, 772.8875pt x 213.79875pt>
+<prints/pwd.png, id=227, 772.8875pt x 213.79875pt>
 File: prints/pwd.png Graphic file (type png)
  <use prints/pwd.png>
-Package pdftex.def Info: prints/pwd.png used on input line 463.
+Package pdftex.def Info: prints/pwd.png used on input line 447.
 (pdftex.def)             Requested size: 231.86803pt x 64.1401pt.
 
-<prints/mkdir1.png, id=272, 772.8875pt x 411.5375pt>
+<prints/mkdir1.png, id=228, 772.8875pt x 411.5375pt>
 File: prints/mkdir1.png Graphic file (type png)
  <use prints/mkdir1.png>
-Package pdftex.def Info: prints/mkdir1.png used on input line 470.
+Package pdftex.def Info: prints/mkdir1.png used on input line 454.
 (pdftex.def)             Requested size: 231.86803pt x 123.4622pt.
 
-<prints/rmdir1.png, id=273, 772.8875pt x 425.59pt>
+<prints/rmdir1.png, id=229, 772.8875pt x 425.59pt>
 File: prints/rmdir1.png Graphic file (type png)
  <use prints/rmdir1.png>
-Package pdftex.def Info: prints/rmdir1.png used on input line 477.
+Package pdftex.def Info: prints/rmdir1.png used on input line 461.
 (pdftex.def)             Requested size: 231.86803pt x 127.67798pt.
 
-<prints/get1.png, id=274, 771.88374pt x 305.14pt>
+<prints/get1.png, id=230, 771.88374pt x 305.14pt>
 File: prints/get1.png Graphic file (type png)
  <use prints/get1.png>
-Package pdftex.def Info: prints/get1.png used on input line 484.
+Package pdftex.def Info: prints/get1.png used on input line 468.
 (pdftex.def)             Requested size: 231.56691pt x 91.5427pt.
 
-<prints/put1.png, id=275, 772.8875pt x 424.58624pt>
+<prints/put1.png, id=231, 772.8875pt x 424.58624pt>
 File: prints/put1.png Graphic file (type png)
  <use prints/put1.png>
-Package pdftex.def Info: prints/put1.png used on input line 491.
+Package pdftex.def Info: prints/put1.png used on input line 475.
 (pdftex.def)             Requested size: 231.86803pt x 127.37685pt.
 
-<prints/delete1.png, id=276, 771.88374pt x 380.42125pt>
+<prints/delete1.png, id=232, 771.88374pt x 380.42125pt>
 File: prints/delete1.png Graphic file (type png)
 
 <use prints/delete1.png>
-Package pdftex.def Info: prints/delete1.png used on input line 498.
+Package pdftex.def Info: prints/delete1.png used on input line 482.
 (pdftex.def)             Requested size: 231.56691pt x 114.12724pt.
- <prints/close.png, id=277, 772.8875pt x 185.69376pt>
+ <prints/close.png, id=233, 772.8875pt x 185.69376pt>
 File: prints/close.png Graphic file (type png)
 
 <use prints/close.png>
-Package pdftex.def Info: prints/close.png used on input line 505.
+Package pdftex.def Info: prints/close.png used on input line 489.
 (pdftex.def)             Requested size: 231.86803pt x 55.70854pt.
- <prints/open1.png, id=278, 771.88374pt x 169.63374pt>
+ <prints/open1.png, id=234, 771.88374pt x 169.63374pt>
 File: prints/open1.png Graphic file (type png)
 
 <use prints/open1.png>
-Package pdftex.def Info: prints/open1.png used on input line 512.
+Package pdftex.def Info: prints/open1.png used on input line 496.
 (pdftex.def)             Requested size: 231.56691pt x 50.8905pt.
- <prints/quit1.png, id=279, 770.88pt x 217.81375pt>
+ <prints/quit1.png, id=235, 770.88pt x 217.81375pt>
 File: prints/quit1.png Graphic file (type png)
 
 <use prints/quit1.png>
-Package pdftex.def Info: prints/quit1.png used on input line 519.
+Package pdftex.def Info: prints/quit1.png used on input line 503.
 (pdftex.def)             Requested size: 231.26578pt x 65.34462pt.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 524.
-LaTeX Font Info:    Try loading font information for U+msa on input line 526.
+(babel)             in language  on input line 508.
+LaTeX Font Info:    Try loading font information for U+msa on input line 510.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 526.
+LaTeX Font Info:    Try loading font information for U+msb on input line 510.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 533.
+(babel)             in language  on input line 514.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 533.
- [3 <./diagrams/Command_cd_dirname.png>]
+(babel)             in language  on input line 514.
+ [3]
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 545.
+(babel)             in language  on input line 526.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 550.
+(babel)             in language  on input line 526.
+ [4 <./diagrams/Command_cd_dirname.png> <./diagrams/Command_ls_dirname.png> <./
+diagrams/Command_pwd.png> <./diagrams/Command_mkdir_dirname.png> <./diagrams/Co
+mmand_rmdir_dirname.png> <./diagrams/Command_get_filename.png>]
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 550.
- [4 <./diagrams/Command_ls_dirname.png> <./diagrams/Command_pwd.png> <./diagram
-s/Command_mkdir_dirname.png> <./diagrams/Command_rmdir_dirname.png> <./diagrams
-/Command_get_filename.png>]
+(babel)             in language  on input line 529.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 551.
-
-Underfull \hbox (badness 10000) in paragraph at lines 553--554
-[]\T1/ptm/m/n/10 Nesse mo-mento, foi im-ple-men-tado o mé-todo
- []
-
+(babel)             in language  on input line 532.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 554.
+(babel)             in language  on input line 532.
+ [5 <./diagrams/Command_put_filename.png> <./diagrams/Command_delete_filename.p
+ng> <./diagrams/Command_close.png> <./diagrams/Command_open_server.png> <./diag
+rams/Command_quit.png>]
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 554.
-[5 <./diagrams/Command_put_filename.png> <./diagrams/Command_delete_filename.pn
-g> <./diagrams/Command_close.png> <./diagrams/Command_open_server.png> <./diagr
-ams/Command_quit.png>]
+(babel)             in language  on input line 532.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 554.
-Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 554.
+(babel)             in language  on input line 532.
  [6 <./prints/cd1.png> <./prints/ls1.png> <./prints/pwd.png> <./prints/mkdir1.p
 ng> <./prints/rmdir1.png> <./prints/get1.png> <./prints/put1.png> <./prints/del
 ete1.png>]
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 569.
-Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 573.
-Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 577.
+(babel)             in language  on input line 535.
 
-<imagens/summary.png, id=427, 476.78125pt x 177.66376pt>
+Underfull \hbox (badness 10000) in paragraph at lines 537--538
+[]\T1/ptm/m/n/10 Nesse mo-mento, foi im-ple-men-tado o mé-todo
+ []
+
+Package babel Info: Redefining portuges shorthand "|
+(babel)             in language  on input line 553.
+Package babel Info: Redefining portuges shorthand "|
+(babel)             in language  on input line 557.
+Package babel Info: Redefining portuges shorthand "|
+(babel)             in language  on input line 561.
+<imagens/summary.png, id=399, 476.78125pt x 177.66376pt>
 File: imagens/summary.png Graphic file (type png)
 
 <use imagens/summary.png>
-Package pdftex.def Info: imagens/summary.png used on input line 583.
+Package pdftex.def Info: imagens/summary.png used on input line 567.
 (pdftex.def)             Requested size: 238.39003pt x 88.83165pt.
- <imagens/train/15.png, id=429, 642.4pt x 481.8pt>
+ <imagens/train/15.png, id=401, 642.4pt x 481.8pt>
 File: imagens/train/15.png Graphic file (type png)
 
 <use imagens/train/15.png>
-Package pdftex.def Info: imagens/train/15.png used on input line 594.
+Package pdftex.def Info: imagens/train/15.png used on input line 578.
 (pdftex.def)             Requested size: 192.72148pt x 144.5411pt.
 
-<imagens/dqn_evaluation.png, id=434, 462.528pt x 346.896pt>
+<imagens/dqn_evaluation.png, id=406, 462.528pt x 346.896pt>
 File: imagens/dqn_evaluation.png Graphic file (type png)
 
 <use imagens/dqn_evaluation.png>
-Package pdftex.def Info: imagens/dqn_evaluation.png used on input line 605.
+Package pdftex.def Info: imagens/dqn_evaluation.png used on input line 589.
 (pdftex.def)             Requested size: 231.26343pt x 173.44757pt.
 
-<imagens/evaluate_dqn_result.png, id=435, 415.5525pt x 466.74374pt>
+<imagens/evaluate_dqn_result.png, id=407, 415.5525pt x 466.74374pt>
 File: imagens/evaluate_dqn_result.png Graphic file (type png)
 
 <use imagens/evaluate_dqn_result.png>
-Package pdftex.def Info: imagens/evaluate_dqn_result.png used on input line 612
+Package pdftex.def Info: imagens/evaluate_dqn_result.png used on input line 596
 .
 (pdftex.def)             Requested size: 166.21805pt x 186.69418pt.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 623.
+(babel)             in language  on input line 607.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 623.
+(babel)             in language  on input line 607.
  [7 <./prints/close.png> <./prints/open1.png> <./prints/quit1.png> <./imagens/s
-ummary.png> <./imagens/train/15.png (PNG copy)>] <imagens/agent_decision.png, i
-d=459, 462.528pt x 346.896pt>
+ummary.png>]
+<imagens/agent_decision.png, id=433, 462.528pt x 346.896pt>
 File: imagens/agent_decision.png Graphic file (type png)
 
 <use imagens/agent_decision.png>
-Package pdftex.def Info: imagens/agent_decision.png used on input line 629.
+Package pdftex.def Info: imagens/agent_decision.png used on input line 613.
 (pdftex.def)             Requested size: 231.26343pt x 173.44757pt.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 636.
+(babel)             in language  on input line 620.
 
 
 ** Conference Paper **
@@ -1379,33 +1375,33 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 645.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 629.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 645.
+(babel)             in language  on input line 629.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language  on input line 645.
-[8 <./imagens/dqn_evaluation.png> <./imagens/evaluate_dqn_result.png> <./imagen
-s/agent_decision.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 645.
+(babel)             in language  on input line 629.
+[8 <./imagens/train/15.png (PNG copy)> <./imagens/dqn_evaluation.png> <./imagen
+s/evaluate_dqn_result.png> <./imagens/agent_decision.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 629.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 645.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 645.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 629.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 629.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 37FC85222125819F3D6619FEFBCC1777;1090.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 645.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 629.
  ) 
 Here is how much of TeX's memory you used:
- 11321 strings out of 493029
- 160835 string characters out of 6136235
- 361579 words of memory out of 5000000
- 14349 multiletter control sequences out of 15000+600000
+ 11291 strings out of 493029
+ 160395 string characters out of 6136235
+ 358579 words of memory out of 5000000
+ 14345 multiletter control sequences out of 15000+600000
  106059 words of font info for 112 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 32i,8n,40p,690b,1864s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,8n,40p,725b,1859s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/
@@ -1413,10 +1409,10 @@ fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8
 a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (8 pages, 1121285 bytes).
+Output written on main.pdf (8 pages, 1122072 bytes).
 PDF statistics:
- 562 PDF objects out of 1000 (max. 8388607)
- 500 compressed objects within 5 object streams
- 327 named destinations out of 1000 (max. 500000)
+ 531 PDF objects out of 1000 (max. 8388607)
+ 469 compressed objects within 5 object streams
+ 301 named destinations out of 1000 (max. 500000)
  256 words of extra memory for PDF output out of 10000 (max. 10000000)
 
