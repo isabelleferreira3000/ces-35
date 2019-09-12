@@ -1,15 +1,20 @@
 \BOOKMARK [1][-]{section.1}{Implementa\347\343o}{}% 1
 \BOOKMARK [2][-]{subsection.1.1}{Fun\347\365es auxiliares}{section.1}% 2
 \BOOKMARK [2][-]{subsection.1.2}{Navega\347\343o e listagem de diret\363rios}{section.1}% 3
-\BOOKMARK [2][-]{subsection.1.3}{Manipula\347\343o de diret\363rios}{section.1}% 4
-\BOOKMARK [2][-]{subsection.1.4}{Manipula\347\343o de arquivos}{section.1}% 5
-\BOOKMARK [2][-]{subsection.1.5}{Gerenciamento de conex\365es}{section.1}% 6
-\BOOKMARK [1][-]{section.2}{Diagramas de Sequ\352ncia}{}% 7
-\BOOKMARK [1][-]{section.3}{Funcionamento}{}% 8
-\BOOKMARK [2][-]{subsection.3.1}{Implementa\347\343o da Defini\347\343o da Rede Neural}{section.3}% 9
-\BOOKMARK [2][-]{subsection.3.2}{Escolha de A\347\343o usando Rede Neural}{section.3}% 10
-\BOOKMARK [2][-]{subsection.3.3}{Reward Engineering}{section.3}% 11
-\BOOKMARK [2][-]{subsection.3.4}{Treinamento usando DQN}{section.3}% 12
-\BOOKMARK [2][-]{subsection.3.5}{Avalia\347\343o da Pol\355tica}{section.3}% 13
-\BOOKMARK [1][-]{section.4}{Resultados e Conclus\365es}{}% 14
-\BOOKMARK [1][-]{section*.1}{Refer\352ncias}{}% 15
+\BOOKMARK [3][-]{subsubsection.1.2.1}{cd <dirname>}{subsection.1.2}% 4
+\BOOKMARK [3][-]{subsubsection.1.2.2}{ls [dirname]}{subsection.1.2}% 5
+\BOOKMARK [3][-]{subsubsection.1.2.3}{pwd}{subsection.1.2}% 6
+\BOOKMARK [2][-]{subsection.1.3}{Manipula\347\343o de diret\363rios}{section.1}% 7
+\BOOKMARK [3][-]{subsubsection.1.3.1}{mkdir <dirname>}{subsection.1.3}% 8
+\BOOKMARK [3][-]{subsubsection.1.3.2}{rmdir <dirname>}{subsection.1.3}% 9
+\BOOKMARK [2][-]{subsection.1.4}{Manipula\347\343o de arquivos}{section.1}% 10
+\BOOKMARK [3][-]{subsubsection.1.4.1}{get <filename>}{subsection.1.4}% 11
+\BOOKMARK [3][-]{subsubsection.1.4.2}{put <filename>}{subsection.1.4}% 12
+\BOOKMARK [3][-]{subsubsection.1.4.3}{delete <filename>}{subsection.1.4}% 13
+\BOOKMARK [2][-]{subsection.1.5}{Gerenciamento de conex\365es}{section.1}% 14
+\BOOKMARK [3][-]{subsubsection.1.5.1}{close}{subsection.1.5}% 15
+\BOOKMARK [3][-]{subsubsection.1.5.2}{open <server>}{subsection.1.5}% 16
+\BOOKMARK [3][-]{subsubsection.1.5.3}{quit}{subsection.1.5}% 17
+\BOOKMARK [1][-]{section.2}{Coment\341rios adicionais}{}% 18
+\BOOKMARK [1][-]{section.3}{Diagramas de Sequ\352ncia}{}% 19
+\BOOKMARK [1][-]{section.4}{Imagens do funcionamento}{}% 20

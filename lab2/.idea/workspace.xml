@@ -4,6 +4,7 @@
     <list default="true" id="5a1612fb-a2e6-4046-9bfe-e30c5bebf249" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/relatorio/main.aux" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.aux" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/relatorio/main.log" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/relatorio/main.out" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/relatorio/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/relatorio/main.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.synctex.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/relatorio/main.tex" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.tex" afterDir="false" />
@@ -40,8 +41,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="377">
-              <caret line="198" column="12" lean-forward="true" selection-start-line="198" selection-start-column="12" selection-end-line="200" selection-end-column="54" />
+            <state relative-caret-position="195">
+              <caret line="215" column="27" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="27" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -208,7 +209,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="64154000" />
+    <option name="totallyTimeSpent" value="64779000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
@@ -351,8 +352,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="377">
-          <caret line="198" column="12" lean-forward="true" selection-start-line="198" selection-start-column="12" selection-end-line="200" selection-end-column="54" />
+        <state relative-caret-position="195">
+          <caret line="215" column="27" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="27" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
