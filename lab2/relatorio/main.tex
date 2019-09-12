@@ -68,7 +68,7 @@ A linguagem de programação utilizada foi Python 3, com o auxílio das bibliote
 \subsection{Funções auxiliares}
 
 \begin{lstlisting}
-# Server code
+# Server and Client code
 def receive_message(conn):
     message_received = ""
     while True:
@@ -95,6 +95,52 @@ def check_authentication(conn):
 			authenticate = True
 
 	return authenticate, username
+\end{lstlisting}
+
+\begin{lstlisting}
+# Server code
+def create_credentials():
+	credentials_file = open("credentials.txt", "r")
+	lines = credentials_file.readlines()
+	for line in lines:
+		username = line.split(" ")[0]
+		password = line.split(" ")[1]
+		password = password.split("\n")[0]
+		credentials[username] = password
+\end{lstlisting}
+
+\begin{lstlisting}
+# Client code
+def get_command_line():
+	line_input = input(">> ")
+	comm = line_input.split(" ")[0]
+	args = line_input.split(" ")[1:]
+	return comm, args, line_input
+\end{lstlisting}
+
+\begin{lstlisting}
+# Client code
+def handle_feedback(comm, text):
+	if comm == "cd" or \
+	    comm == "mkdir" or comm == "rmdir" or \
+	    comm == "get" or comm == "put" or \
+	    comm == "delete":
+		if text != "ok":
+			print(text)
+
+	elif comm == "ls":
+		try:
+			aux = text.split("[")[1:]
+			aux = aux[0].split("]")[0]
+			aux = aux.split(", ")
+			for x in aux:
+				x = x.split("'")[1]
+				print(x)
+		except:
+			print(text)
+
+	elif comm == "pwd":
+		print(text)
 \end{lstlisting}
 
 \subsection{Navegação e listagem de diretórios}
@@ -187,6 +233,46 @@ elif comm == "get":
 \end{lstlisting}
 
 \begin{lstlisting}
+# Client code
+elif command == "get":
+	# if file exists in server
+	feedback = receive_message(sock)
+
+	if feedback == "file already exists":
+		# if file exists in local
+		already_exists = check_if_file_already_exists(filename)
+
+		can_get = True
+		if already_exists:
+			print("File already exists. Do you want to overwrite local file? [Y/N]")
+			while True:
+				answer = input()
+				if answer.upper() == "Y":
+					break
+				elif answer.upper() == "N":
+					can_get = False
+					break
+				else:
+					print("Invalid answer. Please, answer with Y or N.")
+
+		if can_get:
+			sock.sendall(bytes("can get\r\n", 'utf-8'))
+			f = open(str(filename), 'wb')
+			aux = sock.recv(1024)
+			while aux:
+				f.write(aux)
+				aux = sock.recv(1024)
+				if aux.endswith(bytes("\r\n", 'utf-8')):
+					break
+			print("File downloaded!")
+		else:
+			sock.sendall(bytes("can not get\r\n", 'utf-8'))
+
+	else:
+		print("Error: file does not exists in server")
+\end{lstlisting}
+
+\begin{lstlisting}
 # Server code
 elif comm == "put":
 	# if file exists in local
@@ -210,6 +296,49 @@ elif comm == "put":
 		        	break
 		else:
 			conn.sendall(bytes("ok\r\n", 'utf-8'))
+\end{lstlisting}
+
+\begin{lstlisting}
+# Client code
+elif command == "put":
+	# if file exists in local
+	file_exists_in_local = check_if_file_exists(filename)
+
+	if file_exists_in_local:
+		sock.sendall(bytes("files exists in local\r\n", 'utf-8'))
+		
+		# if file exists in server
+		feedback = receive_message(sock)
+		can_receive = False
+
+		if feedback == "file already exists":
+			print("File already exists. Do you want to overwrite remote file? [Y/N]")
+			while True:
+				answer = input()
+				if answer.upper() == "Y":
+					sock.sendall(bytes("Y\r\n", 'utf-8'))
+					can_receive = True
+					break
+				elif answer.upper() == "N":
+					sock.sendall(bytes("N\r\n", 'utf-8'))
+					break
+				else:
+					print("Invalid answer. Please, answer with Y or N.")
+		else:
+			can_receive = True
+			sock.sendall(bytes("Y\r\n", 'utf-8'))
+
+		if can_receive:
+			file = open(filename, "rb")
+			aux = file.read(1024)
+			while aux:
+				sock.send(aux)
+				aux = file.read(1024)
+				sock.sendall(bytes("\r\n", 'utf-8'))
+			print("File sent!")
+
+	else:
+		sock.sendall(bytes("files does not exists in local\r\n", 'utf-8'))
 \end{lstlisting}
 
 \begin{lstlisting}
