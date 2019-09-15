@@ -55,13 +55,13 @@ void insertevent(struct event *p);
 
 int get_checksum(struct pkt packet);
 
-float A_increment = 20.0;
+float A_increment = 200.0;
 int A_seqnum;
 int A_acknum;
 int A_sending_message;
 struct pkt A_current_packet;
 
-float B_increment = 20.0;
+float B_increment = 200.0;
 int B_seqnum;
 int B_acknum;
 int B_sending_message;
@@ -156,9 +156,8 @@ void A_input(packet)
       printf("\n");
 
       struct pkt ack;
-      ack.seqnum = ++A_seqnum;
-      A_acknum = packet.seqnum;
-      ack.acknum = A_acknum;
+      ack.seqnum = packet.seqnum;
+      ack.acknum = packet.seqnum;
       for (int i = 0; i < 20; i++) {
         ack.payload[i] = packet.payload[i];
       }
@@ -170,11 +169,13 @@ void A_input(packet)
 
     } else if (packet.acknum > 0) { // ack message
       printf("Recebido ACK %d\n", packet.acknum);
+      printf("PAREI O TIMER DO A\n");
       stoptimer(0);
       A_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
       printf("Recebido NACK %d\n", packet.acknum);
+      printf("PAREI O TIMER DO A\n");
       stoptimer(0);
 
       printf("Reenviando pacote %d: ", A_current_packet.seqnum);
@@ -182,6 +183,7 @@ void A_input(packet)
         printf("%c", A_current_packet.payload[i]);
       }
       printf("\n");
+      printf("COMECEI O TIMER DO A\n");
       starttimer(0, A_increment);
       tolayer3(0, A_current_packet);
     }
@@ -190,9 +192,8 @@ void A_input(packet)
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
     struct pkt nack;
-    nack.seqnum = ++A_seqnum;
-    A_acknum = -packet.seqnum;
-    nack.acknum = A_acknum;
+    nack.seqnum = packet.seqnum;
+    nack.acknum = -packet.seqnum;
     for (int i = 0; i < 20; i++) {
       nack.payload[i] = packet.payload[i];
     }
@@ -229,9 +230,8 @@ void B_input(packet)
       printf("\n");
 
       struct pkt ack;
-      ack.seqnum = ++B_seqnum;
-      B_acknum = packet.seqnum;
-      ack.acknum = B_acknum;
+      ack.seqnum = packet.seqnum;
+      ack.acknum = packet.seqnum;
       for (int i = 0; i < 20; i++) {
         ack.payload[i] = packet.payload[i];
       }
@@ -248,6 +248,7 @@ void B_input(packet)
       }
       printf("\n");
 
+      printf("PAREI O TIMER DO B\n");
       stoptimer(1);
       B_sending_message = 0;
 
@@ -257,6 +258,7 @@ void B_input(packet)
         printf("%c", packet.payload[i]);
       }
       printf("\n");
+      printf("PAREI O TIMER DO B\n");
       stoptimer(1);
 
       printf("Reenviando pacote %d: ", B_current_packet.seqnum);
@@ -265,6 +267,7 @@ void B_input(packet)
       }
       printf("\n");
 
+      printf("COMECEI O TIMER DO B\n");
       starttimer(1, B_increment);
       tolayer3(1, B_current_packet);
     }
@@ -273,9 +276,8 @@ void B_input(packet)
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
     struct pkt nack;
-    nack.seqnum = ++B_seqnum;
-    B_acknum = -packet.seqnum;
-    nack.acknum = B_acknum;
+    nack.seqnum = packet.seqnum;
+    nack.acknum = -packet.seqnum;
     for (int i = 0; i < 20; i++) {
       nack.payload[i] = packet.payload[i];
     }
@@ -308,6 +310,7 @@ void A_output(message)
       A_current_packet.payload[i] = packet.payload[i];
     }
     
+    printf("COMECEI O TIMER DO A\n");
     starttimer(0, A_increment);
     tolayer3(0, packet);
   }
@@ -334,6 +337,7 @@ void B_output(message)  /* need be completed only for extra credit */
       B_current_packet.payload[i] = packet.payload[i];
     }
     
+    printf("COMECEI O TIMER DO B\n");
     starttimer(1, B_increment);
     tolayer3(1, packet);
   }
@@ -345,7 +349,7 @@ void B_output(message)  /* need be completed only for extra credit */
 void A_timerinterrupt()
 {
   printf("Start A_timerinterrupt\n");
-
+  printf("COMECEI O TIMER DO A\n");
   starttimer(0, A_increment);
   tolayer3(0, A_current_packet);
 
@@ -358,7 +362,7 @@ void A_timerinterrupt()
 void B_timerinterrupt()
 {
   printf("Start B_timerinterrupt\n");
-
+  printf("COMECEI O TIMER DO B\n");
   starttimer(1, B_increment);
   tolayer3(1, B_current_packet);
 
@@ -506,23 +510,23 @@ void init()                         /* initialize the simulator */
    printf("-----  Stop and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
    nsimmax = 2;
-   printf("\nnsimmax = 5\n");
+   printf("\nnsimmax = %d\n", nsimmax);
   //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
-   lossprob = 0.4;
-   printf("\nlossprob = 0.8\n");
+   lossprob = 0.0;
+   printf("\nlossprob = %f\n", lossprob);
   //  scanf("%f",&lossprob);
    printf("Enter packet corruption probability [0.0 for no corruption]:");
-   corruptprob = 0.0;
-   printf("\ncorruptprob = 0.0\n");
+   corruptprob = 0.3;
+   printf("\ncorruptprob = %f\n", corruptprob);
   //  scanf("%f",&corruptprob);
    printf("Enter average time between messages from sender's layer5 [ > 0.0]:");
    lambda = 1000;
-   printf("\nlambda = 1000\n");
+   printf("\nlambda = %f\n", lambda);
   //  scanf("%f",&lambda);
    printf("Enter TRACE:");
    TRACE = 2;
-   printf("\nTRACE = 2\n");
+   printf("\nTRACE = %d\n", TRACE);
   //  scanf("%d",&TRACE);
 
    srand(9999);              /* init random number generator */
