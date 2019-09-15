@@ -60,12 +60,16 @@ int A_seqnum;
 int A_acknum;
 int A_sending_message;
 struct pkt A_current_packet;
+int A_sent_first;
+int A_last_seqnum_received;
 
 float B_increment = 200.0;
 int B_seqnum;
 int B_acknum;
 int B_sending_message;
 struct pkt B_current_packet;
+int B_sent_first;
+int B_last_seqnum_received;
 
 struct pkt create_packet(AorB, message)
   int AorB; 
@@ -114,8 +118,12 @@ void A_init()
 {
   printf("Start A_init\n");
 
+  A_increment = 200.0;
   A_seqnum = 0;
   A_acknum = 0;
+  A_sending_message = 0;
+  A_sent_first = 0;
+  A_last_seqnum_received = 0;
 
   printf("End A_init\n");
 }
@@ -126,8 +134,12 @@ void B_init()
 {
   printf("Start B_init\n");
 
+  B_increment = 200.0;
   B_seqnum = 0;
   B_acknum = 0;
+  B_sending_message = 0;
+  B_sent_first = 0;
+  B_last_seqnum_received = 0;
 
   printf("End B_init\n");
 }
@@ -155,6 +167,8 @@ void A_input(packet)
       }
       printf("\n");
 
+      A_sent_first = 0;
+
       struct pkt ack;
       ack.seqnum = packet.seqnum;
       ack.acknum = packet.seqnum;
@@ -165,10 +179,15 @@ void A_input(packet)
 
       printf("Enviando ACK: %d\n", ack.acknum);
       tolayer3(0, ack);
-      tolayer5(0, packet.payload);
+
+      if (A_last_seqnum_received != packet.seqnum) {
+        A_last_seqnum_received = packet.seqnum;
+        tolayer5(0, packet.payload);
+      }
 
     } else if (packet.acknum > 0) { // ack message
       printf("Recebido ACK %d\n", packet.acknum);
+      A_sent_first = 0;
       printf("PAREI O TIMER DO A\n");
       stoptimer(0);
       A_sending_message = 0;
@@ -191,16 +210,18 @@ void A_input(packet)
   } else {
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
-    struct pkt nack;
-    nack.seqnum = packet.seqnum;
-    nack.acknum = -packet.seqnum;
-    for (int i = 0; i < 20; i++) {
-      nack.payload[i] = packet.payload[i];
-    }
-    nack.checksum = get_checksum(nack);
+    if (A_sent_first == 0) {
+      struct pkt nack;
+      nack.seqnum = packet.seqnum;
+      nack.acknum = -packet.seqnum;
+      for (int i = 0; i < 20; i++) {
+        nack.payload[i] = packet.payload[i];
+      }
+      nack.checksum = get_checksum(nack);
 
-    printf("Enviando NACK: %d\n", nack.acknum);
-    tolayer3(0, nack);
+      printf("Enviando NACK: %d\n", nack.acknum);
+      tolayer3(0, nack);
+    }
   }
 
   printf("End A_input\n");
@@ -229,6 +250,8 @@ void B_input(packet)
       }
       printf("\n");
 
+      B_sent_first = 0;
+
       struct pkt ack;
       ack.seqnum = packet.seqnum;
       ack.acknum = packet.seqnum;
@@ -239,15 +262,15 @@ void B_input(packet)
 
       printf("Enviando ACK: %d\n", ack.acknum);
       tolayer3(1, ack);
-      tolayer5(1, packet.payload);
+
+      if (B_last_seqnum_received != packet.seqnum) {
+        B_last_seqnum_received = packet.seqnum;
+        tolayer5(1, packet.payload);
+      }
 
     } else if (packet.acknum > 0) { // ack message
-      printf("Recebido ACK %d: ", packet.acknum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
-      }
-      printf("\n");
-
+      printf("Recebido ACK %d\n", packet.acknum);
+      B_sent_first = 0;
       printf("PAREI O TIMER DO B\n");
       stoptimer(1);
       B_sending_message = 0;
@@ -275,16 +298,18 @@ void B_input(packet)
   } else {
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
-    struct pkt nack;
-    nack.seqnum = packet.seqnum;
-    nack.acknum = -packet.seqnum;
-    for (int i = 0; i < 20; i++) {
-      nack.payload[i] = packet.payload[i];
-    }
-    nack.checksum = get_checksum(nack);
+    if (B_sent_first == 0) {
+      struct pkt nack;
+      nack.seqnum = packet.seqnum;
+      nack.acknum = -packet.seqnum;
+      for (int i = 0; i < 20; i++) {
+        nack.payload[i] = packet.payload[i];
+      }
+      nack.checksum = get_checksum(nack);
 
-    printf("Enviando NACK: %d\n", nack.acknum);
-    tolayer3(1, nack);
+      printf("Enviando NACK: %d\n", nack.acknum);
+      tolayer3(1, nack);
+    }
   }
 
   printf("End B_input\n");
@@ -298,6 +323,7 @@ void A_output(message)
 
   if (A_sending_message == 0) {
     A_sending_message = 1;
+    A_sent_first = 1;
 
     struct pkt packet;
 
@@ -325,6 +351,7 @@ void B_output(message)  /* need be completed only for extra credit */
 
   if (B_sending_message == 0) {
     B_sending_message = 1;
+    B_sent_first = 1;
 
     struct pkt packet;
 
