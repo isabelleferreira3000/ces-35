@@ -56,24 +56,16 @@ void insertevent(struct event *p);
 int get_checksum(struct pkt packet);
 
 float A_increment = 20.0;
-
 int A_seqnum;
 int A_acknum;
-struct msg A_buffer[50];
-int A_buffer_current_size;
-int A_buffer_index;
+int A_sending_message;
+struct pkt A_current_packet;
 
+float B_increment = 20.0;
 int B_seqnum;
 int B_acknum;
-struct msg B_buffer[50];
-int B_buffer_current_size;
-int B_buffer_index;
-
-int get_next_index(index)
-  int index;
-{
-  return index % 50;
-}
+int B_sending_message;
+struct pkt B_current_packet;
 
 struct pkt create_packet(AorB, message)
   int AorB; 
@@ -89,8 +81,10 @@ struct pkt create_packet(AorB, message)
     packet.seqnum = ++B_seqnum;
   }
 
+  packet.acknum = 0;
+  
   strcpy(packet.payload, message.data);
-
+  
   packet.checksum = get_checksum(packet);
 
   printf("End create_packet\n");
@@ -112,79 +106,6 @@ int get_checksum(packet)
   return result;
 }
 
-/* called from layer 5, passed the data to be sent to other side */
-void A_output(message)
-  struct msg message;
-{
-  printf("Start A_output\n");
-
-  // if (0) {
-  //   A_buffer[get_next_index(A_buffer_index)] = message;
-  //   A_buffer_index++;
-  //   A_buffer_current_size++;
-
-  // } else {
-  //   if (A_buffer_current_size == 0) {
-
-  //   } else {
-
-  //   }
-  // }
-
-  struct pkt packet;
-
-  packet = create_packet(0, message);
-
-  tolayer3(0, packet);
-  starttimer(0, A_increment);
-
-  printf("End A_output\n");
-}
-
-void B_output(message)  /* need be completed only for extra credit */
-  struct msg message;
-{
-  printf("Start B_output\n");
-
-  struct pkt packet;
-
-  packet = create_packet(1, message);
-
-  tolayer3(1, packet);
-
-  printf("End B_output\n");
-}
-
-/* called from layer 3, when a packet arrives for layer 4 */
-void A_input(packet)
-  struct pkt packet;
-{
-  printf("Start A_input\n");
-
-  stoptimer(0);
-
-  int checksum = get_checksum(packet);
-
-  if (packet.checksum == checksum) {
-    // veio nao corrompido
-    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
-  } else {
-    // veio corrompido
-    printf("Pacote %d corrompido\n", packet.seqnum);
-    printf("%d != %d\n", packet.checksum, checksum);
-  }
-
-  printf("End A_input\n");
-}
-
-/* called when A's timer goes off */
-void A_timerinterrupt()
-{
-  printf("Start A_timerinterrupt\n");
-
-  printf("End A_timerinterrupt\n");
-}  
-
 /* the following routine will be called once (only) before any other */
 /* entity A routines are called. You can use it to do any initialization */
 void A_init()
@@ -195,56 +116,6 @@ void A_init()
   A_acknum = 0;
 
   printf("End A_init\n");
-}
-
-
-/* Note that with simplex transfer from a-to-B, there is no B_output() */
-
-/* called from layer 3, when a packet arrives for layer 4 at B*/
-void B_input(packet)
-  struct pkt packet;
-{
-  printf("Start B_input\n");
-
-  stoptimer(0);
-
-  int checksum = get_checksum(packet);
-
-  if (packet.checksum == checksum) {
-    // veio nao corrompido
-    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
-    
-    // struct pkt ack;
-    // ack.seqnum = packet.seqnum;
-    // ack.acknum = packet.seqnum;
-    // strcpy(ack.payload, packet.payload);
-    // ack.checksum = get_checksum(ack);
-
-    // tolayer3(1, ack);
-
-  } else {
-    // veio corrompido
-    printf("Pacote %d corrompido\n", packet.seqnum);
-    printf("%d != %d\n", packet.checksum, checksum);
-
-    // struct pkt nack;
-    // nack.seqnum = packet.seqnum;
-    // nack.acknum = packet.seqnum;
-    // strcpy(nack.payload, packet.payload);
-    // nack.checksum = get_checksum(nack);
-
-    // tolayer3(1, nack);
-  }
-
-  printf("End B_input\n");
-}
-
-/* called when B's timer goes off */
-void B_timerinterrupt()
-{
-  printf("Start B_timerinterrupt\n");
-
-  printf("End B_timerinterrupt\n");
 }
 
 /* the following rouytine will be called once (only) before any other */
@@ -259,6 +130,188 @@ void B_init()
   printf("End B_init\n");
 }
 
+/* called from layer 3, when a packet arrives for layer 4 */
+void A_input(packet)
+  struct pkt packet;
+{
+  printf("Start A_input\n");
+
+  int checksum = get_checksum(packet);
+
+  if (packet.checksum == checksum) {
+    // veio nao corrompido
+    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
+  
+    if (packet.acknum == 0){ // normal message
+      printf("Mensagem normal %d: %s\n", packet.seqnum, packet.payload);
+      struct pkt ack;
+      ack.seqnum = packet.seqnum;
+      ack.acknum = packet.seqnum;
+      strcpy(ack.payload, packet.payload);
+      ack.checksum = get_checksum(ack);
+
+      printf("Enviando ACK: %d\n", ack.acknum);
+      tolayer3(0, ack);
+      tolayer5(0, packet.payload);
+
+    } else if (packet.acknum > 0) { // ack message
+      printf("Recebido ACK %d\n", packet.acknum);
+      stoptimer(0);
+      A_sending_message = 0;
+
+    } else if (packet.acknum < 0) { // nack message
+      printf("Recebido NACK %d\n", packet.acknum);
+      stoptimer(0);
+
+      printf("Reenviando pacote %d: %s\n", A_current_packet.seqnum, A_current_packet.payload);
+      tolayer3(0, A_current_packet);
+      starttimer(0, A_increment);
+    }
+
+  } else {
+    // veio corrompido
+    printf("Pacote %d corrompido\n", packet.seqnum);
+    struct pkt nack;
+    nack.seqnum = packet.seqnum;
+    nack.acknum = -packet.seqnum;
+    strcpy(nack.payload, packet.payload);
+    nack.checksum = get_checksum(nack);
+
+    printf("Enviando NACK: %d\n", nack.acknum);
+    tolayer3(0, nack);
+  }
+
+  printf("End A_input\n");
+}
+
+/* called from layer 3, when a packet arrives for layer 4 at B*/
+void B_input(packet)
+  struct pkt packet;
+{
+  printf("Start B_input\n");
+
+  int checksum = get_checksum(packet);
+
+  if (packet.checksum == checksum) {
+    // veio nao corrompido
+    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
+  
+    if (packet.acknum == 0){ // normal message
+      printf("Mensagem normal %d: %s\n", packet.seqnum, packet.payload);
+      struct pkt ack;
+      ack.seqnum = packet.seqnum;
+      ack.acknum = packet.seqnum;
+      strcpy(ack.payload, packet.payload);
+      ack.checksum = get_checksum(ack);
+
+      printf("Enviando ACK: %d\n", ack.acknum);
+      tolayer3(1, ack);
+      tolayer5(1, packet.payload);
+
+    } else if (packet.acknum > 0) { // ack message
+      printf("Recebido ACK %d: %s\n", packet.acknum, packet.payload);
+      stoptimer(1);
+      B_sending_message = 0;
+
+    } else if (packet.acknum < 0) { // nack message
+      printf("Recebido NACK %d: %s\n", packet.acknum, packet.payload);
+      stoptimer(1);
+
+      printf("Reenviando pacote %d: %s\n", B_current_packet.seqnum, B_current_packet.payload);
+      tolayer3(1, B_current_packet);
+      starttimer(1, B_increment);
+    }
+
+  } else {
+    // veio corrompido
+    printf("Pacote %d corrompido\n", packet.seqnum);
+    struct pkt nack;
+    nack.seqnum = packet.seqnum;
+    nack.acknum = -packet.seqnum;
+    strcpy(nack.payload, packet.payload);
+    nack.checksum = get_checksum(nack);
+
+    printf("Enviando NACK: %d\n", nack.acknum);
+    tolayer3(1, nack);
+  }
+
+  printf("End B_input\n");
+}
+
+/* called from layer 5, passed the data to be sent to other side */
+void A_output(message)
+  struct msg message;
+{
+  printf("Start A_output\n");
+
+  if (A_sending_message == 0) {
+    A_sending_message = 1;
+
+    struct pkt packet;
+
+    packet = create_packet(0, message);
+
+    A_current_packet.seqnum = packet.seqnum;
+    A_current_packet.acknum = packet.acknum;
+    A_current_packet.checksum = packet.checksum;
+    strcpy(A_current_packet.payload, packet.payload);
+
+    tolayer3(0, packet);
+    starttimer(0, A_increment);
+  }
+
+  printf("End A_output\n");
+}
+
+void B_output(message)  /* need be completed only for extra credit */
+  struct msg message;
+{
+  printf("Start B_output\n");
+
+  if (B_sending_message == 0) {
+    B_sending_message = 1;
+
+    struct pkt packet;
+
+    packet = create_packet(0, message);
+
+    B_current_packet.seqnum = packet.seqnum;
+    B_current_packet.acknum = packet.acknum;
+    B_current_packet.checksum = packet.checksum;
+    strcpy(B_current_packet.payload, packet.payload);
+    
+    tolayer3(1, packet);
+    starttimer(1, B_increment);
+  }
+
+  printf("End B_output\n");
+}
+
+/* called when A's timer goes off */
+void A_timerinterrupt()
+{
+  printf("Start A_timerinterrupt\n");
+
+  stoptimer(0);
+  tolayer3(0, A_current_packet);
+  starttimer(0, A_increment);
+
+  printf("End A_timerinterrupt\n");
+}  
+
+/* Note that with simplex transfer from a-to-B, there is no B_output() */
+
+/* called when B's timer goes off */
+void B_timerinterrupt()
+{
+  printf("Start B_timerinterrupt\n");
+
+  stoptimer(1);
+  tolayer3(1, B_current_packet);
+  starttimer(1, B_increment);
+
+  printf("End B_timerinterrupt\n");
+}
 
 /*****************************************************************
 ***************** NETWORK EMULATION CODE STARTS BELOW ***********
@@ -400,12 +453,12 @@ void init()                         /* initialize the simulator */
 
    printf("-----  Stop and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
-   nsimmax = 30;
-   printf("\nnsimmax = 30\n");
+   nsimmax = 5;
+   printf("\nnsimmax = 5\n");
   //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
-   lossprob = 0.1;
-   printf("\nlossprob = 0.1\n");
+   lossprob = 0.0;
+   printf("\nlossprob = 0.0\n");
   //  scanf("%f",&lossprob);
    printf("Enter packet corruption probability [0.0 for no corruption]:");
    corruptprob = 0.3;
