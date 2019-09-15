@@ -55,6 +55,8 @@ void insertevent(struct event *p);
 
 int get_checksum(struct pkt packet);
 
+float A_increment = 20.0;
+
 int A_seqnum;
 int A_acknum;
 struct msg A_buffer[50];
@@ -116,24 +118,25 @@ void A_output(message)
 {
   printf("Start A_output\n");
 
-  if (0) {
-    A_buffer[get_next_index(A_buffer_index)] = message;
-    A_buffer_index++;
-    A_buffer_current_size++;
+  // if (0) {
+  //   A_buffer[get_next_index(A_buffer_index)] = message;
+  //   A_buffer_index++;
+  //   A_buffer_current_size++;
 
-  } else {
-    if (A_buffer_current_size == 0) {
+  // } else {
+  //   if (A_buffer_current_size == 0) {
 
-    } else {
+  //   } else {
 
-    }
-  }
+  //   }
+  // }
 
   struct pkt packet;
 
   packet = create_packet(0, message);
 
   tolayer3(0, packet);
+  starttimer(0, A_increment);
 
   printf("End A_output\n");
 }
@@ -158,6 +161,8 @@ void A_input(packet)
 {
   printf("Start A_input\n");
 
+  stoptimer(0);
+
   int checksum = get_checksum(packet);
 
   if (packet.checksum == checksum) {
@@ -166,6 +171,7 @@ void A_input(packet)
   } else {
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
+    printf("%d != %d\n", packet.checksum, checksum);
   }
 
   printf("End A_input\n");
@@ -200,15 +206,34 @@ void B_input(packet)
 {
   printf("Start B_input\n");
 
+  stoptimer(0);
+
   int checksum = get_checksum(packet);
 
   if (packet.checksum == checksum) {
     // veio nao corrompido
-    printf("Nao %d corrompido: %s\n", packet.seqnum, packet.payload);
+    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
+    
+    // struct pkt ack;
+    // ack.seqnum = packet.seqnum;
+    // ack.acknum = packet.seqnum;
+    // strcpy(ack.payload, packet.payload);
+    // ack.checksum = get_checksum(ack);
+
+    // tolayer3(1, ack);
+
   } else {
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
     printf("%d != %d\n", packet.checksum, checksum);
+
+    // struct pkt nack;
+    // nack.seqnum = packet.seqnum;
+    // nack.acknum = packet.seqnum;
+    // strcpy(nack.payload, packet.payload);
+    // nack.checksum = get_checksum(nack);
+
+    // tolayer3(1, nack);
   }
 
   printf("End B_input\n");
@@ -375,8 +400,8 @@ void init()                         /* initialize the simulator */
 
    printf("-----  Stop and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
-   nsimmax = 10;
-   printf("\nnsimmax = 10\n");
+   nsimmax = 30;
+   printf("\nnsimmax = 30\n");
   //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
    lossprob = 0.1;
