@@ -57,13 +57,28 @@ int get_checksum(struct pkt packet);
 
 int A_seqnum;
 int A_acknum;
+struct msg A_buffer[50];
+int A_buffer_current_size;
+int A_buffer_index;
+
 int B_seqnum;
 int B_acknum;
+struct msg B_buffer[50];
+int B_buffer_current_size;
+int B_buffer_index;
+
+int get_next_index(index)
+  int index;
+{
+  return index % 50;
+}
 
 struct pkt create_packet(AorB, message)
   int AorB; 
   struct msg message;
 {
+  printf("Start create_packet\n");
+
   struct pkt packet;
 
   if (AorB == 0) {
@@ -76,6 +91,7 @@ struct pkt create_packet(AorB, message)
 
   packet.checksum = get_checksum(packet);
 
+  printf("End create_packet\n");
   return packet;
 }
 
@@ -87,12 +103,11 @@ int get_checksum(packet)
   int result = packet.acknum + packet.seqnum;
 
   for (int i = 0; i < 20; i++) {
-    result += (int)packet.payload;
+    result += (int)packet.payload[i];
   }
 
-  return result;
-
   printf("End checksum\n");
+  return result;
 }
 
 /* called from layer 5, passed the data to be sent to other side */
@@ -100,6 +115,19 @@ void A_output(message)
   struct msg message;
 {
   printf("Start A_output\n");
+
+  if (0) {
+    A_buffer[get_next_index(A_buffer_index)] = message;
+    A_buffer_index++;
+    A_buffer_current_size++;
+
+  } else {
+    if (A_buffer_current_size == 0) {
+
+    } else {
+
+    }
+  }
 
   struct pkt packet;
 
@@ -134,8 +162,10 @@ void A_input(packet)
 
   if (packet.checksum == checksum) {
     // veio nao corrompido
+    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
   } else {
     // veio corrompido
+    printf("Pacote %d corrompido\n", packet.seqnum);
   }
 
   printf("End A_input\n");
@@ -171,11 +201,14 @@ void B_input(packet)
   printf("Start B_input\n");
 
   int checksum = get_checksum(packet);
-  
+
   if (packet.checksum == checksum) {
     // veio nao corrompido
+    printf("Nao %d corrompido: %s\n", packet.seqnum, packet.payload);
   } else {
     // veio corrompido
+    printf("Pacote %d corrompido\n", packet.seqnum);
+    printf("%d != %d\n", packet.checksum, checksum);
   }
 
   printf("End B_input\n");
@@ -342,8 +375,8 @@ void init()                         /* initialize the simulator */
 
    printf("-----  Stop and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
-   nsimmax = 30;
-   printf("\nnsimmax = 30\n");
+   nsimmax = 10;
+   printf("\nnsimmax = 10\n");
   //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
    lossprob = 0.1;
