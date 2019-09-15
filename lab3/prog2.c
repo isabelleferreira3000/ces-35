@@ -169,12 +169,12 @@ void A_input(packet)
 
     } else if (packet.acknum > 0) { // ack message
       printf("Recebido ACK %d\n", packet.acknum);
-      // stoptimer(0);
+      stoptimer(0);
       A_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
       printf("Recebido NACK %d\n", packet.acknum);
-      // stoptimer(0);
+      stoptimer(0);
 
       printf("Reenviando pacote %d: ", A_current_packet.seqnum);
       for (int i = 0; i < 20; i++) {
@@ -245,7 +245,7 @@ void B_input(packet)
       }
       printf("\n");
 
-      // stoptimer(1);
+      stoptimer(1);
       B_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
@@ -254,7 +254,7 @@ void B_input(packet)
         printf("%c", packet.payload[i]);
       }
       printf("\n");
-      // stoptimer(1);
+      stoptimer(1);
 
       printf("Reenviando pacote %d: ", B_current_packet.seqnum);
       for (int i = 0; i < 20; i++) {
@@ -342,7 +342,6 @@ void A_timerinterrupt()
 {
   printf("Start A_timerinterrupt\n");
 
-  // stoptimer(0);
   starttimer(0, A_increment);
   tolayer3(0, A_current_packet);
 
@@ -356,7 +355,6 @@ void B_timerinterrupt()
 {
   printf("Start B_timerinterrupt\n");
 
-  // stoptimer(1);
   starttimer(1, B_increment);
   tolayer3(1, B_current_packet);
 
@@ -503,12 +501,12 @@ void init()                         /* initialize the simulator */
 
    printf("-----  Stop and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
-   nsimmax = 5;
+   nsimmax = 2;
    printf("\nnsimmax = 5\n");
   //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
-   lossprob = 0.3;
-   printf("\nlossprob = 0.3\n");
+   lossprob = 0.4;
+   printf("\nlossprob = 0.8\n");
   //  scanf("%f",&lossprob);
    printf("Enter packet corruption probability [0.0 for no corruption]:");
    corruptprob = 0.0;
