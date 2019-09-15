@@ -156,8 +156,9 @@ void A_input(packet)
       printf("\n");
 
       struct pkt ack;
-      ack.seqnum = packet.seqnum;
-      ack.acknum = packet.seqnum;
+      ack.seqnum = ++A_seqnum;
+      A_acknum = packet.seqnum;
+      ack.acknum = A_acknum;
       for (int i = 0; i < 20; i++) {
         ack.payload[i] = packet.payload[i];
       }
@@ -189,8 +190,9 @@ void A_input(packet)
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
     struct pkt nack;
-    nack.seqnum = packet.seqnum;
-    nack.acknum = -packet.seqnum;
+    nack.seqnum = ++A_seqnum;
+    A_acknum = -packet.seqnum;
+    nack.acknum = A_acknum;
     for (int i = 0; i < 20; i++) {
       nack.payload[i] = packet.payload[i];
     }
@@ -227,8 +229,9 @@ void B_input(packet)
       printf("\n");
 
       struct pkt ack;
-      ack.seqnum = packet.seqnum;
-      ack.acknum = packet.seqnum;
+      ack.seqnum = ++B_seqnum;
+      B_acknum = packet.seqnum;
+      ack.acknum = B_acknum;
       for (int i = 0; i < 20; i++) {
         ack.payload[i] = packet.payload[i];
       }
@@ -270,8 +273,9 @@ void B_input(packet)
     // veio corrompido
     printf("Pacote %d corrompido\n", packet.seqnum);
     struct pkt nack;
-    nack.seqnum = packet.seqnum;
-    nack.acknum = -packet.seqnum;
+    nack.seqnum = ++B_seqnum;
+    B_acknum = -packet.seqnum;
+    nack.acknum = B_acknum;
     for (int i = 0; i < 20; i++) {
       nack.payload[i] = packet.payload[i];
     }
