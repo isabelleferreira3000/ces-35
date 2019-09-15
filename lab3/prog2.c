@@ -83,7 +83,9 @@ struct pkt create_packet(AorB, message)
 
   packet.acknum = 0;
   
-  strcpy(packet.payload, message.data);
+  for (int i = 0; i < 20; i++) {
+    packet.payload[i] = message.data[i];
+  }
   
   packet.checksum = get_checksum(packet);
 
@@ -140,14 +142,25 @@ void A_input(packet)
 
   if (packet.checksum == checksum) {
     // veio nao corrompido
-    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
+    printf("Pacote %d nao corrompido: ", packet.seqnum);
+    for (int i = 0; i < 20; i++) {
+      printf("%c", packet.payload[i]);
+    }
+    printf("\n");
   
     if (packet.acknum == 0){ // normal message
-      printf("Mensagem normal %d: %s\n", packet.seqnum, packet.payload);
+      printf("Mensagem normal %d: ", packet.seqnum);
+      for (int i = 0; i < 20; i++) {
+        printf("%c", packet.payload[i]);
+      }
+      printf("\n");
+
       struct pkt ack;
       ack.seqnum = packet.seqnum;
       ack.acknum = packet.seqnum;
-      strcpy(ack.payload, packet.payload);
+      for (int i = 0; i < 20; i++) {
+        ack.payload[i] = packet.payload[i];
+      }
       ack.checksum = get_checksum(ack);
 
       printf("Enviando ACK: %d\n", ack.acknum);
@@ -156,16 +169,20 @@ void A_input(packet)
 
     } else if (packet.acknum > 0) { // ack message
       printf("Recebido ACK %d\n", packet.acknum);
-      stoptimer(0);
+      // stoptimer(0);
       A_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
       printf("Recebido NACK %d\n", packet.acknum);
-      stoptimer(0);
+      // stoptimer(0);
 
-      printf("Reenviando pacote %d: %s\n", A_current_packet.seqnum, A_current_packet.payload);
-      tolayer3(0, A_current_packet);
+      printf("Reenviando pacote %d: ", A_current_packet.seqnum);
+      for (int i = 0; i < 20; i++) {
+        printf("%c", A_current_packet.payload[i]);
+      }
+      printf("\n");
       starttimer(0, A_increment);
+      tolayer3(0, A_current_packet);
     }
 
   } else {
@@ -174,7 +191,9 @@ void A_input(packet)
     struct pkt nack;
     nack.seqnum = packet.seqnum;
     nack.acknum = -packet.seqnum;
-    strcpy(nack.payload, packet.payload);
+    for (int i = 0; i < 20; i++) {
+      nack.payload[i] = packet.payload[i];
+    }
     nack.checksum = get_checksum(nack);
 
     printf("Enviando NACK: %d\n", nack.acknum);
@@ -194,14 +213,25 @@ void B_input(packet)
 
   if (packet.checksum == checksum) {
     // veio nao corrompido
-    printf("Pacote %d nao corrompido: %s\n", packet.seqnum, packet.payload);
+    printf("Pacote %d nao corrompido: ", packet.seqnum);
+    for (int i = 0; i < 20; i++) {
+      printf("%c", packet.payload[i]);
+    }
+    printf("\n");
   
     if (packet.acknum == 0){ // normal message
-      printf("Mensagem normal %d: %s\n", packet.seqnum, packet.payload);
+      printf("Mensagem normal %d: ", packet.seqnum);
+      for (int i = 0; i < 20; i++) {
+        printf("%c", packet.payload[i]);
+      }
+      printf("\n");
+
       struct pkt ack;
       ack.seqnum = packet.seqnum;
       ack.acknum = packet.seqnum;
-      strcpy(ack.payload, packet.payload);
+      for (int i = 0; i < 20; i++) {
+        ack.payload[i] = packet.payload[i];
+      }
       ack.checksum = get_checksum(ack);
 
       printf("Enviando ACK: %d\n", ack.acknum);
@@ -209,17 +239,31 @@ void B_input(packet)
       tolayer5(1, packet.payload);
 
     } else if (packet.acknum > 0) { // ack message
-      printf("Recebido ACK %d: %s\n", packet.acknum, packet.payload);
-      stoptimer(1);
+      printf("Recebido ACK %d: ", packet.acknum);
+      for (int i = 0; i < 20; i++) {
+        printf("%c", packet.payload[i]);
+      }
+      printf("\n");
+
+      // stoptimer(1);
       B_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
-      printf("Recebido NACK %d: %s\n", packet.acknum, packet.payload);
-      stoptimer(1);
+      printf("Recebido NACK %d: ", packet.acknum);
+      for (int i = 0; i < 20; i++) {
+        printf("%c", packet.payload[i]);
+      }
+      printf("\n");
+      // stoptimer(1);
 
-      printf("Reenviando pacote %d: %s\n", B_current_packet.seqnum, B_current_packet.payload);
-      tolayer3(1, B_current_packet);
+      printf("Reenviando pacote %d: ", B_current_packet.seqnum);
+      for (int i = 0; i < 20; i++) {
+        printf("%c", B_current_packet.payload[i]);
+      }
+      printf("\n");
+
       starttimer(1, B_increment);
+      tolayer3(1, B_current_packet);
     }
 
   } else {
@@ -228,7 +272,9 @@ void B_input(packet)
     struct pkt nack;
     nack.seqnum = packet.seqnum;
     nack.acknum = -packet.seqnum;
-    strcpy(nack.payload, packet.payload);
+    for (int i = 0; i < 20; i++) {
+      nack.payload[i] = packet.payload[i];
+    }
     nack.checksum = get_checksum(nack);
 
     printf("Enviando NACK: %d\n", nack.acknum);
@@ -254,10 +300,12 @@ void A_output(message)
     A_current_packet.seqnum = packet.seqnum;
     A_current_packet.acknum = packet.acknum;
     A_current_packet.checksum = packet.checksum;
-    strcpy(A_current_packet.payload, packet.payload);
-
-    tolayer3(0, packet);
+    for (int i = 0; i < 20; i++) {
+      A_current_packet.payload[i] = packet.payload[i];
+    }
+    
     starttimer(0, A_increment);
+    tolayer3(0, packet);
   }
 
   printf("End A_output\n");
@@ -278,10 +326,12 @@ void B_output(message)  /* need be completed only for extra credit */
     B_current_packet.seqnum = packet.seqnum;
     B_current_packet.acknum = packet.acknum;
     B_current_packet.checksum = packet.checksum;
-    strcpy(B_current_packet.payload, packet.payload);
+    for (int i = 0; i < 20; i++) {
+      B_current_packet.payload[i] = packet.payload[i];
+    }
     
-    tolayer3(1, packet);
     starttimer(1, B_increment);
+    tolayer3(1, packet);
   }
 
   printf("End B_output\n");
@@ -292,9 +342,9 @@ void A_timerinterrupt()
 {
   printf("Start A_timerinterrupt\n");
 
-  stoptimer(0);
-  tolayer3(0, A_current_packet);
+  // stoptimer(0);
   starttimer(0, A_increment);
+  tolayer3(0, A_current_packet);
 
   printf("End A_timerinterrupt\n");
 }  
@@ -306,9 +356,9 @@ void B_timerinterrupt()
 {
   printf("Start B_timerinterrupt\n");
 
-  stoptimer(1);
-  tolayer3(1, B_current_packet);
+  // stoptimer(1);
   starttimer(1, B_increment);
+  tolayer3(1, B_current_packet);
 
   printf("End B_timerinterrupt\n");
 }
@@ -457,12 +507,12 @@ void init()                         /* initialize the simulator */
    printf("\nnsimmax = 5\n");
   //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
-   lossprob = 0.0;
-   printf("\nlossprob = 0.0\n");
+   lossprob = 0.3;
+   printf("\nlossprob = 0.3\n");
   //  scanf("%f",&lossprob);
    printf("Enter packet corruption probability [0.0 for no corruption]:");
-   corruptprob = 0.3;
-   printf("\ncorruptprob = 0.3\n");
+   corruptprob = 0.0;
+   printf("\ncorruptprob = 0.0\n");
   //  scanf("%f",&corruptprob);
    printf("Enter average time between messages from sender's layer5 [ > 0.0]:");
    lambda = 1000;
