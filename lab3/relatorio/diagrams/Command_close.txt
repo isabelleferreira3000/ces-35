@@ -1,0 +1,7 @@
+title Command: close
+
+note over Client:if connected
+
+Server<-Client:close
+
+Server->Sessions:delete client's sesstion from Sessions

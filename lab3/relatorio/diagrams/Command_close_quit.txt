@@ -1,0 +1,5 @@
+title Command: close / quit
+
+Server<-Client:close / quit
+
+Server->Sessions:delete client's sesstion from Sessions

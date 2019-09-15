@@ -92,6 +92,7 @@ int B_window_rear = -1;
 int B_window_itemCount = 0;
 
 /* FUNCOES REFERENTES AO BUFFER DO WINDOW */
+
 struct msg top_window(AorB)
   int AorB;
 {
@@ -167,9 +168,6 @@ void push_window(AorB, message)
       B_window_itemCount++;
     }
        
-  } else {
-    printf("Buffer cheio!");
-    exit(0);
   }
 }
 
@@ -206,7 +204,14 @@ struct msg pop_window(AorB)
   return message;  
 }
 
+void send_window(AorB) // cahamado no timerinterrupt
+  int AorB;
+{
+
+}
+
 /* FUNCOES REFERENTES AO BUFFER DO NORMAL */
+
 struct msg top(AorB)
   int AorB;
 {

@@ -1,0 +1,5 @@
+title Command: pwd
+
+Server<-Client:pwd
+
+Server-->Client:reply: client current directory

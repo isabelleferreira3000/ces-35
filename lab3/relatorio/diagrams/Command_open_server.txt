@@ -1,0 +1,16 @@
+title Command: open <server>
+
+note over Client: if not connected yet
+note over Client: if server is "localhost:2121"
+Server<-Client:open <server>
+Server->Client:"user: "
+Server<--Client:username
+Server->Client:"password: "
+Server<--Client:password
+
+Server->Credentials:check credentials
+Server-->Client:reply: connected / not connected
+
+note over Server: if connected
+
+Server->Sessions: add client's session
