@@ -36,6 +36,13 @@ struct pkt {
    char payload[20];
     };
 
+struct event;
+
+void starttimer(int AorB, float increment);
+void stoptimer(int AorB);
+void tolayer3(int AorB, struct pkt packet);
+void tolayer5(int AorB, char datasent[20]);
+
 /********* STUDENTS WRITE THE NEXT SEVEN ROUTINES *********/
 
 /* Here I define some function prototypes to avoid warnings */
@@ -49,9 +56,16 @@ int checksum(packet)
   struct pkt packet;
 {
   printf("Start checksum\n");
-  packet.acknum;
-  printf("End checksum\n");
 
+  int result = packet.acknum + packet.seqnum;
+
+  for (int i = 0; i < 20; i++) {
+    result += (int)packet.payload;
+  }
+
+  return result;
+  
+  printf("End checksum\n");
 }
 
 /* called from layer 5, passed the data to be sent to other side */
