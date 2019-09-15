@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h> /* for malloc, free, srand, rand */
 #include <string.h>
+#include <stdbool.h>
+
+#define BUFFER_MAX_SIZE 50
 
 /*******************************************************************
  ALTERNATING BIT AND GO-BACK-N NETWORK EMULATOR: VERSION 1.1  J.F.Kurose
@@ -62,6 +65,10 @@ int A_sending_message;
 struct pkt A_current_packet;
 int A_sent_first;
 int A_last_seqnum_received;
+struct msg A_buffer[50];
+int A_front = 0;
+int A_rear = -1;
+int A_itemCount = 0;
 
 float B_increment = 200.0;
 int B_seqnum;
@@ -70,6 +77,123 @@ int B_sending_message;
 struct pkt B_current_packet;
 int B_sent_first;
 int B_last_seqnum_received;
+struct msg B_buffer[50];
+int B_front = 0;
+int B_rear = -1;
+int B_itemCount = 0;
+
+struct msg top(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_buffer[A_front];
+
+  } else if (AorB == 1) {
+    return B_buffer[B_front];
+  }
+}
+
+bool isEmpty(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_itemCount == 0;
+
+  } else if (AorB == 1) {
+    return B_itemCount == 0;
+  }
+}
+
+bool isFull(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_itemCount == BUFFER_MAX_SIZE;
+
+  } else if (AorB == 1) {
+    return B_itemCount == BUFFER_MAX_SIZE;
+  }
+}
+
+int size(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_itemCount;
+
+  } else if (AorB == 1) {
+    return B_itemCount;
+  }
+}  
+
+void push(AorB, message)
+  int AorB;
+  struct msg message;
+{
+  if (!isFull(AorB)) {
+
+    if (AorB == 0) {
+
+      if(A_rear == BUFFER_MAX_SIZE-1) {
+        A_rear = -1;            
+      }       
+      
+      for (int i = 0; i < 20; i++) {
+        A_buffer[++A_rear].data[i] = message.data[i];
+      }
+      A_itemCount++;
+
+    } else if (AorB == 1) {
+
+      if(B_rear == BUFFER_MAX_SIZE-1) {
+        B_rear = -1;            
+      }       
+      
+      B_rear++;
+      for (int i = 0; i < 20; i++) {
+        B_buffer[B_rear].data[i] = message.data[i];
+      }
+      B_itemCount++;
+    }
+       
+  } else {
+    printf("Buffer cheio!");
+    exit(0);
+  }
+}
+
+struct msg pop(AorB)
+  int AorB;
+{
+  struct msg message;
+
+  if (AorB == 0) {
+    A_front++;
+    for (int i = 0; i < 20; i++) {
+        message.data[i] = A_buffer[A_front].data[i];
+    }
+
+    if(A_front == BUFFER_MAX_SIZE) {
+      A_front = 0;
+    }
+	
+    A_itemCount--;
+
+  } else if (AorB == 1) {
+    B_front++;
+    for (int i = 0; i < 20; i++) {
+        message.data[i] = B_buffer[B_front].data[i];
+    }
+
+    if(B_front == BUFFER_MAX_SIZE) {
+      B_front = 0;
+    }
+	
+    B_itemCount--;
+  }
+
+  return message;  
+}
 
 struct pkt create_packet(AorB, message)
   int AorB; 
