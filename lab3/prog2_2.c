@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #define BUFFER_MAX_SIZE 50
+#define WINDOW_BUFFER_MAX_SIZE 8
 
 /*******************************************************************
  ALTERNATING BIT AND GO-BACK-N NETWORK EMULATOR: VERSION 1.1  J.F.Kurose
@@ -65,10 +66,14 @@ int A_sending_message;
 struct pkt A_current_packet;
 int A_sent_first;
 int A_last_seqnum_received;
-struct msg A_buffer[50];
+struct msg A_buffer[BUFFER_MAX_SIZE];
 int A_front = 0;
 int A_rear = -1;
 int A_itemCount = 0;
+struct msg A_window_buffer[WINDOW_BUFFER_MAX_SIZE];
+int A_window_front = 0;
+int A_window_rear = -1;
+int A_window_itemCount = 0;
 
 float B_increment = 200.0;
 int B_seqnum;
@@ -77,11 +82,131 @@ int B_sending_message;
 struct pkt B_current_packet;
 int B_sent_first;
 int B_last_seqnum_received;
-struct msg B_buffer[50];
+struct msg B_buffer[BUFFER_MAX_SIZE];
 int B_front = 0;
 int B_rear = -1;
 int B_itemCount = 0;
+struct msg B_window_buffer[WINDOW_BUFFER_MAX_SIZE];
+int B_window_front = 0;
+int B_window_rear = -1;
+int B_window_itemCount = 0;
 
+/* FUNCOES REFERENTES AO BUFFER DO WINDOW */
+struct msg top_window(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_window_buffer[A_window_front];
+
+  } else if (AorB == 1) {
+    return B_window_buffer[B_window_front];
+  }
+}
+
+bool isEmpty_window(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_window_itemCount == 0;
+
+  } else if (AorB == 1) {
+    return B_window_itemCount == 0;
+  }
+}
+
+bool isFull_window(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_window_itemCount == WINDOW_BUFFER_MAX_SIZE;
+
+  } else if (AorB == 1) {
+    return B_window_itemCount == WINDOW_BUFFER_MAX_SIZE;
+  }
+}
+
+int size_window(AorB)
+  int AorB;
+{
+  if (AorB == 0) {
+    return A_window_itemCount;
+
+  } else if (AorB == 1) {
+    return B_window_itemCount;
+  }
+}  
+
+void push_window(AorB, message)
+  int AorB;
+  struct msg message;
+{
+  if (!isFull_window(AorB)) {
+
+    if (AorB == 0) {
+
+      if(A_window_rear == WINDOW_BUFFER_MAX_SIZE-1) {
+        A_window_rear = -1;            
+      }       
+      
+      A_window_rear++;
+      for (int i = 0; i < 20; i++) {
+        A_window_buffer[A_window_rear].data[i] = message.data[i];
+      }
+      A_window_itemCount++;
+
+    } else if (AorB == 1) {
+
+      if(B_window_rear == WINDOW_BUFFER_MAX_SIZE-1) {
+        B_window_rear = -1;            
+      }       
+      
+      B_window_rear++;
+      for (int i = 0; i < 20; i++) {
+        B_window_buffer[B_window_rear].data[i] = message.data[i];
+      }
+      B_window_itemCount++;
+    }
+       
+  } else {
+    printf("Buffer cheio!");
+    exit(0);
+  }
+}
+
+struct msg pop_window(AorB)
+  int AorB;
+{
+  struct msg message;
+
+  if (AorB == 0) {
+    A_window_front++;
+    for (int i = 0; i < 20; i++) {
+        message.data[i] = A_window_buffer[A_window_front].data[i];
+    }
+
+    if(A_window_front == WINDOW_BUFFER_MAX_SIZE) {
+      A_window_front = 0;
+    }
+	
+    A_window_itemCount--;
+
+  } else if (AorB == 1) {
+    B_window_front++;
+    for (int i = 0; i < 20; i++) {
+        message.data[i] = B_window_buffer[B_window_front].data[i];
+    }
+
+    if(B_window_front == WINDOW_BUFFER_MAX_SIZE) {
+      B_window_front = 0;
+    }
+	
+    B_window_itemCount--;
+  }
+
+  return message;  
+}
+
+/* FUNCOES REFERENTES AO BUFFER DO NORMAL */
 struct msg top(AorB)
   int AorB;
 {
@@ -138,8 +263,9 @@ void push(AorB, message)
         A_rear = -1;            
       }       
       
+      A_rear++;
       for (int i = 0; i < 20; i++) {
-        A_buffer[++A_rear].data[i] = message.data[i];
+        A_buffer[A_rear].data[i] = message.data[i];
       }
       A_itemCount++;
 
