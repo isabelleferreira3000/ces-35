@@ -240,15 +240,25 @@ void init()                         /* initialize the simulator */
   
    printf("-----  Stop and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
-   scanf("%d",&nsimmax);
+   nsimmax = 30;
+   printf("\nnsimmax = 30\n");
+  //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
-   scanf("%f",&lossprob);
+   lossprob = 0.1;
+   printf("\nlossprob = 0.1\n");
+  //  scanf("%f",&lossprob);
    printf("Enter packet corruption probability [0.0 for no corruption]:");
-   scanf("%f",&corruptprob);
+   corruptprob = 0.3;
+   printf("\ncorruptprob = 0.3\n");
+  //  scanf("%f",&corruptprob);
    printf("Enter average time between messages from sender's layer5 [ > 0.0]:");
-   scanf("%f",&lambda);
+   lambda = 1000;
+   printf("\nlambda = 1000\n");
+  //  scanf("%f",&lambda);
    printf("Enter TRACE:");
-   scanf("%d",&TRACE);
+   TRACE = 2;
+   printf("\nTRACE = 2\n");
+  //  scanf("%d",&TRACE);
 
    srand(9999);              /* init random number generator */
    sum = 0.0;                /* test random number generator for students */
