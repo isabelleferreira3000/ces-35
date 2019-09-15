@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h> /* for malloc, free, srand, rand */
+#include <string.h>
 
 /*******************************************************************
  ALTERNATING BIT AND GO-BACK-N NETWORK EMULATOR: VERSION 1.1  J.F.Kurose
@@ -52,7 +53,33 @@ void init();
 void generate_next_arrival();
 void insertevent(struct event *p);
 
-int checksum(packet)
+int get_checksum(struct pkt packet);
+
+int A_seqnum;
+int A_acknum;
+int B_seqnum;
+int B_acknum;
+
+struct pkt create_packet(AorB, message)
+  int AorB; 
+  struct msg message;
+{
+  struct pkt packet;
+
+  if (AorB == 0) {
+    packet.seqnum = ++A_seqnum;
+  } else if (AorB == 1) {
+    packet.seqnum = ++B_seqnum;
+  }
+
+  strcpy(packet.payload, message.data);
+
+  packet.checksum = get_checksum(packet);
+
+  return packet;
+}
+
+int get_checksum(packet)
   struct pkt packet;
 {
   printf("Start checksum\n");
@@ -64,7 +91,7 @@ int checksum(packet)
   }
 
   return result;
-  
+
   printf("End checksum\n");
 }
 
@@ -74,14 +101,25 @@ void A_output(message)
 {
   printf("Start A_output\n");
 
-  printf("End A_output\n");
+  struct pkt packet;
 
+  packet = create_packet(0, message);
+
+  tolayer3(0, packet);
+
+  printf("End A_output\n");
 }
 
 void B_output(message)  /* need be completed only for extra credit */
   struct msg message;
 {
   printf("Start B_output\n");
+
+  struct pkt packet;
+
+  packet = create_packet(1, message);
+
+  tolayer3(1, packet);
 
   printf("End B_output\n");
 }
@@ -91,6 +129,14 @@ void A_input(packet)
   struct pkt packet;
 {
   printf("Start A_input\n");
+
+  int checksum = get_checksum(packet);
+
+  if (packet.checksum == checksum) {
+    // veio nao corrompido
+  } else {
+    // veio corrompido
+  }
 
   printf("End A_input\n");
 }
@@ -109,6 +155,9 @@ void A_init()
 {
   printf("Start A_init\n");
 
+  A_seqnum = 0;
+  A_acknum = 0;
+
   printf("End A_init\n");
 }
 
@@ -120,6 +169,14 @@ void B_input(packet)
   struct pkt packet;
 {
   printf("Start B_input\n");
+
+  int checksum = get_checksum(packet);
+  
+  if (packet.checksum == checksum) {
+    // veio nao corrompido
+  } else {
+    // veio corrompido
+  }
 
   printf("End B_input\n");
 }
@@ -137,6 +194,9 @@ void B_timerinterrupt()
 void B_init()
 {
   printf("Start B_init\n");
+
+  B_seqnum = 0;
+  B_acknum = 0;
 
   printf("End B_init\n");
 }
