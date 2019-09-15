@@ -44,32 +44,44 @@ struct pkt {
 void A_output(message)
   struct msg message;
 {
+  printf("Start A_output\n");
+  
+  printf("End A_output\n");
 
 }
 
 void B_output(message)  /* need be completed only for extra credit */
   struct msg message;
 {
+  printf("Start B_output\n");
 
+  printf("End B_output\n");
 }
 
 /* called from layer 3, when a packet arrives for layer 4 */
 void A_input(packet)
   struct pkt packet;
 {
+  printf("Start A_input\n");
 
+  printf("End A_input\n");
 }
 
 /* called when A's timer goes off */
 void A_timerinterrupt()
 {
+  printf("Start A_timerinterrupt\n");
 
+  printf("End A_timerinterrupt\n");
 }  
 
 /* the following routine will be called once (only) before any other */
 /* entity A routines are called. You can use it to do any initialization */
 void A_init()
 {
+  printf("Start A_init\n");
+
+  printf("End A_init\n");
 }
 
 
@@ -79,17 +91,26 @@ void A_init()
 void B_input(packet)
   struct pkt packet;
 {
+  printf("Start B_input\n");
+
+  printf("End B_input\n");
 }
 
 /* called when B's timer goes off */
 void B_timerinterrupt()
 {
+  printf("Start B_timerinterrupt\n");
+
+  printf("End B_timerinterrupt\n");
 }
 
 /* the following rouytine will be called once (only) before any other */
 /* entity B routines are called. You can use it to do any initialization */
 void B_init()
 {
+  printf("Start B_init\n");
+
+  printf("End B_init\n");
 }
 
 
