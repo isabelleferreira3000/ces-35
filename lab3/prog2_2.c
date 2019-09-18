@@ -61,9 +61,7 @@ int get_checksum(struct pkt packet);
 
 float A_increment = 200.0;
 int A_seqnum;
-int A_acknum;
-int A_sending_message;
-struct pkt A_current_packet;
+int A_expected_seqnum;
 int A_sent_first;
 int A_last_seqnum_received;
 struct msg A_buffer[BUFFER_MAX_SIZE];
@@ -77,9 +75,7 @@ int A_window_itemCount = 0;
 
 float B_increment = 200.0;
 int B_seqnum;
-int B_acknum;
-int B_sending_message;
-struct pkt B_current_packet;
+int B_expected_seqnum;
 int B_sent_first;
 int B_last_seqnum_received;
 struct msg B_buffer[BUFFER_MAX_SIZE];
@@ -93,7 +89,7 @@ int B_window_itemCount = 0;
 
 /* FUNCOES REFERENTES A WINDOW */
 
-struct msg top(AorB)
+struct msg top_window(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -104,7 +100,7 @@ struct msg top(AorB)
   }
 }
 
-bool isEmpty(AorB)
+bool isEmpty_window(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -115,7 +111,7 @@ bool isEmpty(AorB)
   }
 }
 
-bool isFull(AorB)
+bool isFull_window(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -126,7 +122,7 @@ bool isFull(AorB)
   }
 }
 
-int size(AorB)
+int size_window(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -137,11 +133,11 @@ int size(AorB)
   }
 }  
 
-void push(AorB, message)
+void push_window(AorB, message)
   int AorB;
   struct msg message;
 {
-  if (!isFull(AorB)) {
+  if (!isFull_window(AorB)) {
 
     if (AorB == 0) {
 
@@ -171,7 +167,7 @@ void push(AorB, message)
   }
 }
 
-struct msg pop(AorB)
+struct msg pop_window(AorB)
   int AorB;
 {
   struct msg message;
@@ -210,14 +206,14 @@ void send_window(AorB) // chamado no timerinterrupt
   struct pkt packet;
   struct msg aux;
   if (AorB == 0) {
-    for (int i = 0; i < size(A_window); i++) {
+    for (int i = 0; i < size_window(A_window); i++) {
       aux = A_window[(A_window_front + i) % WINDOW_MAX_SIZE];
       packet = create_packet(aux);
       tolayer3(0, packet);
     }
 
   } else if (AorB == 1) {
-    for (int i = 0; i < size(A_window); i++) {
+    for (int i = 0; i < size_window(A_window); i++) {
       aux = A_window[(A_window_front + i) % WINDOW_MAX_SIZE];
       packet = create_packet(aux);
       tolayer3(0, packet);
@@ -225,7 +221,7 @@ void send_window(AorB) // chamado no timerinterrupt
   }
 }
 
-/* FUNCOES REFERENTES AO BUFFER DO NORMAL */
+/* FUNCOES REFERENTES AO BUFFER */
 
 struct msg top_buffer(AorB)
   int AorB;
@@ -275,7 +271,7 @@ void push_buffer(AorB, message)
   int AorB;
   struct msg message;
 {
-  if (!isFull(AorB)) {
+  if (!isFull_buffer(AorB)) {
 
     if (AorB == 0) {
 
@@ -390,8 +386,7 @@ void A_init()
 
   A_increment = 200.0;
   A_seqnum = 0;
-  A_acknum = 0;
-  A_sending_message = 0;
+  A_expected_seqnum = 1;
   A_sent_first = 0;
   A_last_seqnum_received = 0;
 
@@ -406,8 +401,7 @@ void B_init()
 
   B_increment = 200.0;
   B_seqnum = 0;
-  B_acknum = 0;
-  B_sending_message = 0;
+  B_expected_seqnum = 1;
   B_sent_first = 0;
   B_last_seqnum_received = 0;
 
@@ -421,16 +415,15 @@ void A_input(packet)
   printf("Start A_input\n");
 
   int checksum = get_checksum(packet);
+  if (packet.checksum == checksum) { // veio nao corrompido
 
-  if (packet.checksum == checksum) {
-    // veio nao corrompido
     printf("Pacote %d nao corrompido: ", packet.seqnum);
     for (int i = 0; i < 20; i++) {
       printf("%c", packet.payload[i]);
     }
     printf("\n");
   
-    if (packet.acknum == 0){ // normal message
+    if (packet.acknum == 0) { // normal message
       printf("Mensagem normal %d: ", packet.seqnum);
       for (int i = 0; i < 20; i++) {
         printf("%c", packet.payload[i]);
@@ -439,20 +432,33 @@ void A_input(packet)
 
       A_sent_first = 0;
 
-      struct pkt ack;
-      ack.seqnum = packet.seqnum;
-      ack.acknum = packet.seqnum;
-      for (int i = 0; i < 20; i++) {
-        ack.payload[i] = ' ';
-      }
-      ack.checksum = get_checksum(ack);
+      if (packet.seqnum == A_expected_seqnum) {
+        printf("SEQNUM VEIO COMO ESPERADO\n");
+        struct pkt ack;
+        ack.seqnum = packet.seqnum;
+        ack.acknum = packet.seqnum;
+        for (int i = 0; i < 20; i++) {
+          ack.payload[i] = ' ';
+        }
+        ack.checksum = get_checksum(ack);
 
-      printf("Enviando ACK: %d\n", ack.acknum);
-      tolayer3(0, ack);
-
-      if (A_last_seqnum_received != packet.seqnum) {
-        A_last_seqnum_received = packet.seqnum;
+        printf("Enviando ACK: %d\n", ack.acknum);
+        tolayer3(0, ack);
         tolayer5(0, packet.payload);
+
+      } else {
+        printf("SEQNUM NAO VEIO COMO ESPERADO -> ignora e reenvia antigo ACK\n");
+        
+        struct pkt ack;
+        ack.seqnum = packet.seqnum;
+        ack.acknum = A_expected_seqnum - 1;
+        for (int i = 0; i < 20; i++) {
+          ack.payload[i] = ' ';
+        }
+        ack.checksum = get_checksum(ack);
+
+        printf("Enviando ACK: %d\n", ack.acknum);
+        tolayer3(0, ack);
       }
 
     } else if (packet.acknum > 0) { // ack message
@@ -460,38 +466,13 @@ void A_input(packet)
       A_sent_first = 0;
       printf("PAREI O TIMER DO A\n");
       stop_buffertimer(0);
-      A_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
       printf("Recebido NACK %d\n", packet.acknum);
-      printf("PAREI O TIMER DO A\n");
-      stop_buffertimer(0);
-
-      printf("Reenviando pacote %d: ", A_current_packet.seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", A_current_packet.payload[i]);
-      }
-      printf("\n");
-      printf("COMECEI O TIMER DO A\n");
-      starttimer(0, A_increment);
-      tolayer3(0, A_current_packet);
     }
 
-  } else {
-    // veio corrompido
-    printf("Pacote %d corrompido\n", packet.seqnum);
-    if (A_sent_first == 0) {
-      struct pkt nack;
-      nack.seqnum = packet.seqnum;
-      nack.acknum = -packet.seqnum;
-      for (int i = 0; i < 20; i++) {
-        nack.payload[i] = ' ';
-      }
-      nack.checksum = get_checksum(nack);
-
-      printf("Enviando NACK: %d\n", nack.acknum);
-      tolayer3(0, nack);
-    }
+  } else { // veio corrompido
+    printf("Pacote %d corrompido -> ignora\n", packet.seqnum);
   }
 
   printf("End A_input\n");
@@ -504,9 +485,8 @@ void B_input(packet)
   printf("Start B_input\n");
 
   int checksum = get_checksum(packet);
+  if (packet.checksum == checksum) { // veio nao corrompido
 
-  if (packet.checksum == checksum) {
-    // veio nao corrompido
     printf("Pacote %d nao corrompido: ", packet.seqnum);
     for (int i = 0; i < 20; i++) {
       printf("%c", packet.payload[i]);
@@ -514,6 +494,7 @@ void B_input(packet)
     printf("\n");
   
     if (packet.acknum == 0){ // normal message
+
       printf("Mensagem normal %d: ", packet.seqnum);
       for (int i = 0; i < 20; i++) {
         printf("%c", packet.payload[i]);
@@ -522,20 +503,33 @@ void B_input(packet)
 
       B_sent_first = 0;
 
-      struct pkt ack;
-      ack.seqnum = packet.seqnum;
-      ack.acknum = packet.seqnum;
-      for (int i = 0; i < 20; i++) {
-        ack.payload[i] = ' ';
-      }
-      ack.checksum = get_checksum(ack);
+      if (packet.seqnum == B_expected_seqnum) {
+        printf("SEQNUM VEIO COMO ESPERADO\n");
+        struct pkt ack;
+        ack.seqnum = packet.seqnum;
+        ack.acknum = packet.seqnum;
+        for (int i = 0; i < 20; i++) {
+          ack.payload[i] = ' ';
+        }
+        ack.checksum = get_checksum(ack);
 
-      printf("Enviando ACK: %d\n", ack.acknum);
-      tolayer3(1, ack);
-
-      if (B_last_seqnum_received != packet.seqnum) {
-        B_last_seqnum_received = packet.seqnum;
+        printf("Enviando ACK: %d\n", ack.acknum);
+        tolayer3(1, ack);
         tolayer5(1, packet.payload);
+
+      } else {
+        printf("SEQNUM NAO VEIO COMO ESPERADO -> ignora e reenvia antigo ACK\n");
+        
+        struct pkt ack;
+        ack.seqnum = packet.seqnum;
+        ack.acknum = A_expected_seqnum - 1;
+        for (int i = 0; i < 20; i++) {
+          ack.payload[i] = ' ';
+        }
+        ack.checksum = get_checksum(ack);
+
+        printf("Enviando ACK: %d\n", ack.acknum);
+        tolayer3(1, ack);
       }
 
     } else if (packet.acknum > 0) { // ack message
@@ -543,43 +537,13 @@ void B_input(packet)
       B_sent_first = 0;
       printf("PAREI O TIMER DO B\n");
       stop_buffertimer(1);
-      B_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
       printf("Recebido NACK %d: ", packet.acknum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
-      }
-      printf("\n");
-      printf("PAREI O TIMER DO B\n");
-      stop_buffertimer(1);
-
-      printf("Reenviando pacote %d: ", B_current_packet.seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", B_current_packet.payload[i]);
-      }
-      printf("\n");
-
-      printf("COMECEI O TIMER DO B\n");
-      starttimer(1, B_increment);
-      tolayer3(1, B_current_packet);
     }
 
-  } else {
-    // veio corrompido
-    printf("Pacote %d corrompido\n", packet.seqnum);
-    if (B_sent_first == 0) {
-      struct pkt nack;
-      nack.seqnum = packet.seqnum;
-      nack.acknum = -packet.seqnum;
-      for (int i = 0; i < 20; i++) {
-        nack.payload[i] = ' ';
-      }
-      nack.checksum = get_checksum(nack);
-
-      printf("Enviando NACK: %d\n", nack.acknum);
-      tolayer3(1, nack);
-    }
+  } else { // veio corrompido
+    printf("Pacote %d corrompido -> ignora\n", packet.seqnum);
   }
 
   printf("End B_input\n");
@@ -591,24 +555,24 @@ void A_output(message)
 {
   printf("Start A_output\n");
 
-  if (A_sending_message == 0) {
-    A_sending_message = 1;
+  if (!isFull_window(0)) {
     A_sent_first = 1;
 
+    push_window(0, message);
+
     struct pkt packet;
-
     packet = create_packet(0, message);
-
-    A_current_packet.seqnum = packet.seqnum;
-    A_current_packet.acknum = packet.acknum;
-    A_current_packet.checksum = packet.checksum;
-    for (int i = 0; i < 20; i++) {
-      A_current_packet.payload[i] = packet.payload[i];
-    }
     
-    printf("COMECEI O TIMER DO A\n");
-    starttimer(0, A_increment);
+    if (size_window(0) == 1) {
+      printf("COMECEI O TIMER DO A PARA PACOTE: %d\n", packet.seqnum);
+      starttimer(0, A_increment);
+    }
+
     tolayer3(0, packet);
+
+  } else {
+    printf("WINDOW CHEIA: ADICIONANDO AO BUFFER\n");
+    push_buffer(0, message);
   }
 
   printf("End A_output\n");
@@ -619,24 +583,24 @@ void B_output(message)  /* need be completed only for extra credit */
 {
   printf("Start B_output\n");
 
-  if (B_sending_message == 0) {
-    B_sending_message = 1;
+  if (!isFull_window(1)) {
     B_sent_first = 1;
 
-    struct pkt packet;
+    push_window(1, message);
 
+    struct pkt packet;
     packet = create_packet(0, message);
 
-    B_current_packet.seqnum = packet.seqnum;
-    B_current_packet.acknum = packet.acknum;
-    B_current_packet.checksum = packet.checksum;
-    for (int i = 0; i < 20; i++) {
-      B_current_packet.payload[i] = packet.payload[i];
+    if (size_window(1) == 1) {
+      printf("COMECEI O TIMER DO B PARA PACOTE: %d\n", packet.seqnum);
+      starttimer(1, B_increment);
     }
     
-    printf("COMECEI O TIMER DO B\n");
-    starttimer(1, B_increment);
     tolayer3(1, packet);
+
+  } else {
+    printf("WINDOW CHEIA: ADICIONANDO AO BUFFER\n");
+    push_buffer(1, message);
   }
 
   printf("End B_output\n");
@@ -646,9 +610,10 @@ void B_output(message)  /* need be completed only for extra credit */
 void A_timerinterrupt()
 {
   printf("Start A_timerinterrupt\n");
+
   printf("COMECEI O TIMER DO A\n");
   starttimer(0, A_increment);
-  tolayer3(0, A_current_packet);
+  send_window(0);
 
   printf("End A_timerinterrupt\n");
 }  
@@ -659,9 +624,10 @@ void A_timerinterrupt()
 void B_timerinterrupt()
 {
   printf("Start B_timerinterrupt\n");
+
   printf("COMECEI O TIMER DO B\n");
   starttimer(1, B_increment);
-  tolayer3(1, B_current_packet);
+  send_window(1);
 
   printf("End B_timerinterrupt\n");
 }
