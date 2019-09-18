@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 #define BUFFER_MAX_SIZE 50
-#define WINDOW_BUFFER_MAX_SIZE 8
+#define WINDOW_MAX_SIZE 8
 
 /*******************************************************************
  ALTERNATING BIT AND GO-BACK-N NETWORK EMULATOR: VERSION 1.1  J.F.Kurose
@@ -44,7 +44,7 @@ struct pkt {
 struct event;
 
 void starttimer(int AorB, float increment);
-void stoptimer(int AorB);
+void stop_buffertimer(int AorB);
 void tolayer3(int AorB, struct pkt packet);
 void tolayer5(int AorB, char datasent[20]);
 
@@ -70,7 +70,7 @@ struct msg A_buffer[BUFFER_MAX_SIZE];
 int A_front = 0;
 int A_rear = -1;
 int A_itemCount = 0;
-struct msg A_window_buffer[WINDOW_BUFFER_MAX_SIZE];
+struct msg A_window[WINDOW_MAX_SIZE];
 int A_window_front = 0;
 int A_window_rear = -1;
 int A_window_itemCount = 0;
@@ -86,25 +86,27 @@ struct msg B_buffer[BUFFER_MAX_SIZE];
 int B_front = 0;
 int B_rear = -1;
 int B_itemCount = 0;
-struct msg B_window_buffer[WINDOW_BUFFER_MAX_SIZE];
+struct msg B_window[WINDOW_MAX_SIZE];
 int B_window_front = 0;
 int B_window_rear = -1;
 int B_window_itemCount = 0;
 
 /* FUNCOES REFERENTES AO BUFFER DO WINDOW */
 
-struct msg top_window(AorB)
+struct msg top(AorB)
   int AorB;
 {
   if (AorB == 0) {
-    return A_window_buffer[A_window_front];
+    return A_window
+  [A_window_front];
 
   } else if (AorB == 1) {
-    return B_window_buffer[B_window_front];
+    return B_window
+  [B_window_front];
   }
 }
 
-bool isEmpty_window(AorB)
+bool isEmpty(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -115,18 +117,20 @@ bool isEmpty_window(AorB)
   }
 }
 
-bool isFull_window(AorB)
+bool isFull(AorB)
   int AorB;
 {
   if (AorB == 0) {
-    return A_window_itemCount == WINDOW_BUFFER_MAX_SIZE;
+    return A_window_itemCount == WINDOW_MAX_SIZE
+  ;
 
   } else if (AorB == 1) {
-    return B_window_itemCount == WINDOW_BUFFER_MAX_SIZE;
+    return B_window_itemCount == WINDOW_MAX_SIZE
+  ;
   }
 }
 
-int size_window(AorB)
+int size(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -137,7 +141,7 @@ int size_window(AorB)
   }
 }  
 
-void push_window(AorB, message)
+void push(AorB, message)
   int AorB;
   struct msg message;
 {
@@ -145,25 +149,29 @@ void push_window(AorB, message)
 
     if (AorB == 0) {
 
-      if(A_window_rear == WINDOW_BUFFER_MAX_SIZE-1) {
+      if(A_window_rear == WINDOW_MAX_SIZE
+    -1) {
         A_window_rear = -1;            
       }       
       
       A_window_rear++;
       for (int i = 0; i < 20; i++) {
-        A_window_buffer[A_window_rear].data[i] = message.data[i];
+        A_window
+      [A_window_rear].data[i] = message.data[i];
       }
       A_window_itemCount++;
 
     } else if (AorB == 1) {
 
-      if(B_window_rear == WINDOW_BUFFER_MAX_SIZE-1) {
+      if(B_window_rear == WINDOW_MAX_SIZE
+    -1) {
         B_window_rear = -1;            
       }       
       
       B_window_rear++;
       for (int i = 0; i < 20; i++) {
-        B_window_buffer[B_window_rear].data[i] = message.data[i];
+        B_window
+      [B_window_rear].data[i] = message.data[i];
       }
       B_window_itemCount++;
     }
@@ -171,7 +179,7 @@ void push_window(AorB, message)
   }
 }
 
-struct msg pop_window(AorB)
+struct msg pop(AorB)
   int AorB;
 {
   struct msg message;
@@ -179,10 +187,12 @@ struct msg pop_window(AorB)
   if (AorB == 0) {
     A_window_front++;
     for (int i = 0; i < 20; i++) {
-        message.data[i] = A_window_buffer[A_window_front].data[i];
+        message.data[i] = A_window
+      [A_window_front].data[i];
     }
 
-    if(A_window_front == WINDOW_BUFFER_MAX_SIZE) {
+    if(A_window_front == WINDOW_MAX_SIZE
+  ) {
       A_window_front = 0;
     }
 	
@@ -191,10 +201,12 @@ struct msg pop_window(AorB)
   } else if (AorB == 1) {
     B_window_front++;
     for (int i = 0; i < 20; i++) {
-        message.data[i] = B_window_buffer[B_window_front].data[i];
+        message.data[i] = B_window
+      [B_window_front].data[i];
     }
 
-    if(B_window_front == WINDOW_BUFFER_MAX_SIZE) {
+    if(B_window_front == WINDOW_MAX_SIZE
+  ) {
       B_window_front = 0;
     }
 	
@@ -204,15 +216,30 @@ struct msg pop_window(AorB)
   return message;  
 }
 
-void send_window(AorB) // cahamado no timerinterrupt
+void send_window(AorB) // chamado no timerinterrupt
   int AorB;
 {
+  struct pkt packet;
+  struct msg aux;
+  if (AorB == 0) {
+    for (int i = 0; i < size(A_window); i++) {
+      aux = A_window[(A_window_front + i) % WINDOW_MAX_SIZE];
+      packet = create_packet(aux);
+      tolayer3(0, packet);
+    }
 
+  } else if (AorB == 1) {
+    for (int i = 0; i < size(A_window); i++) {
+      aux = A_window[(A_window_front + i) % WINDOW_MAX_SIZE];
+      packet = create_packet(aux);
+      tolayer3(0, packet);
+    }
+  }
 }
 
 /* FUNCOES REFERENTES AO BUFFER DO NORMAL */
 
-struct msg top(AorB)
+struct msg top_buffer(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -223,7 +250,7 @@ struct msg top(AorB)
   }
 }
 
-bool isEmpty(AorB)
+bool isEmpty_buffer(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -234,7 +261,7 @@ bool isEmpty(AorB)
   }
 }
 
-bool isFull(AorB)
+bool isFull_buffer(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -245,7 +272,7 @@ bool isFull(AorB)
   }
 }
 
-int size(AorB)
+int size_buffer(AorB)
   int AorB;
 {
   if (AorB == 0) {
@@ -256,7 +283,7 @@ int size(AorB)
   }
 }  
 
-void push(AorB, message)
+void push_buffer(AorB, message)
   int AorB;
   struct msg message;
 {
@@ -293,7 +320,7 @@ void push(AorB, message)
   }
 }
 
-struct msg pop(AorB)
+struct msg pop_buffer(AorB)
   int AorB;
 {
   struct msg message;
@@ -444,13 +471,13 @@ void A_input(packet)
       printf("Recebido ACK %d\n", packet.acknum);
       A_sent_first = 0;
       printf("PAREI O TIMER DO A\n");
-      stoptimer(0);
+      stop_buffertimer(0);
       A_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
       printf("Recebido NACK %d\n", packet.acknum);
       printf("PAREI O TIMER DO A\n");
-      stoptimer(0);
+      stop_buffertimer(0);
 
       printf("Reenviando pacote %d: ", A_current_packet.seqnum);
       for (int i = 0; i < 20; i++) {
@@ -527,7 +554,7 @@ void B_input(packet)
       printf("Recebido ACK %d\n", packet.acknum);
       B_sent_first = 0;
       printf("PAREI O TIMER DO B\n");
-      stoptimer(1);
+      stop_buffertimer(1);
       B_sending_message = 0;
 
     } else if (packet.acknum < 0) { // nack message
@@ -537,7 +564,7 @@ void B_input(packet)
       }
       printf("\n");
       printf("PAREI O TIMER DO B\n");
-      stoptimer(1);
+      stop_buffertimer(1);
 
       printf("Reenviando pacote %d: ", B_current_packet.seqnum);
       for (int i = 0; i < 20; i++) {
@@ -656,7 +683,7 @@ void B_timerinterrupt()
 The code below emulates the layer 3 and below network environment:
   - emulates the tranmission and delivery (possibly with bit-level corruption
     and packet loss) of packets across the layer 3/4 interface
-  - handles the starting/stopping of a timer, and generates timer
+  - handles the starting/stop_bufferping of a timer, and generates timer
     interrupts (resulting in calling students timer handler).
   - generates message to be sent (passed from later 5 to 4)
 
@@ -691,7 +718,7 @@ struct event *evlist = NULL;   /* the event list */
 
 int TRACE = 1;             /* for my debugging */
 int nsim = 0;              /* number of messages from 5 to 4 so far */
-int nsimmax = 0;           /* number of msgs to generate, then stop */
+int nsimmax = 0;           /* number of msgs to generate, then stop_buffer */
 float time = (float)0.000;
 float lossprob;            /* probability that a packet is dropped  */
 float corruptprob;         /* probability that one bit is packet is flipped */
@@ -789,7 +816,7 @@ void init()                         /* initialize the simulator */
   float jimsrand();
 
 
-   printf("-----  Stop and Wait Network Simulator Version 1.1 -------- \n\n");
+   printf("-----  Stop_buffer and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
    nsimmax = 5;
    printf("\nnsimmax = %d\n", nsimmax);
@@ -926,13 +953,13 @@ void printevlist()
 /********************** Student-callable ROUTINES ***********************/
 
 /* called by students routine to cancel a previously-started timer */
-void stoptimer(AorB)
-int AorB;  /* A or B is trying to stop timer */
+void stop_buffertimer(AorB)
+int AorB;  /* A or B is trying to stop_buffer timer */
 {
  struct event *q;/* ,*qold; // Unreferenced local variable removed */
 
  if (TRACE>2)
-    printf("          STOP TIMER: stopping timer at %f\n",time);
+    printf("          STOP_buffertop_buffer TIMER: stop_bufferping timer at %f\n",time);
 /* for (q=evlist; q!=NULL && q->next!=NULL; q = q->next)  */
  for (q=evlist; q!=NULL ; q = q->next)
     if ( (q->evtype==TIMER_INTERRUPT  && q->eventity==AorB) ) {
@@ -957,7 +984,7 @@ int AorB;  /* A or B is trying to stop timer */
 
 
 void starttimer(AorB,increment)
-int AorB;  /* A or B is trying to stop timer */
+int AorB;  /* A or B is trying to stop_buffer timer */
 float increment;
 {
 
@@ -986,7 +1013,7 @@ float increment;
 
 /************************** TOLAYER3 ***************/
 void tolayer3(AorB,packet)
-int AorB;  /* A or B is trying to stop timer */
+int AorB;  /* A or B is trying to stop_buffer timer */
 struct pkt packet;
 {
  struct pkt *mypktptr;
