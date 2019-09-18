@@ -91,18 +91,16 @@ int B_window_front = 0;
 int B_window_rear = -1;
 int B_window_itemCount = 0;
 
-/* FUNCOES REFERENTES AO BUFFER DO WINDOW */
+/* FUNCOES REFERENTES A WINDOW */
 
 struct msg top(AorB)
   int AorB;
 {
   if (AorB == 0) {
-    return A_window
-  [A_window_front];
+    return A_window[A_window_front];
 
   } else if (AorB == 1) {
-    return B_window
-  [B_window_front];
+    return B_window[B_window_front];
   }
 }
 
@@ -121,12 +119,10 @@ bool isFull(AorB)
   int AorB;
 {
   if (AorB == 0) {
-    return A_window_itemCount == WINDOW_MAX_SIZE
-  ;
+    return A_window_itemCount == WINDOW_MAX_SIZE;
 
   } else if (AorB == 1) {
-    return B_window_itemCount == WINDOW_MAX_SIZE
-  ;
+    return B_window_itemCount == WINDOW_MAX_SIZE;
   }
 }
 
@@ -145,33 +141,29 @@ void push(AorB, message)
   int AorB;
   struct msg message;
 {
-  if (!isFull_window(AorB)) {
+  if (!isFull(AorB)) {
 
     if (AorB == 0) {
 
-      if(A_window_rear == WINDOW_MAX_SIZE
-    -1) {
+      if(A_window_rear == WINDOW_MAX_SIZE-1) {
         A_window_rear = -1;            
       }       
       
       A_window_rear++;
       for (int i = 0; i < 20; i++) {
-        A_window
-      [A_window_rear].data[i] = message.data[i];
+        A_window[A_window_rear].data[i] = message.data[i];
       }
       A_window_itemCount++;
 
     } else if (AorB == 1) {
 
-      if(B_window_rear == WINDOW_MAX_SIZE
-    -1) {
+      if(B_window_rear == WINDOW_MAX_SIZE-1) {
         B_window_rear = -1;            
       }       
       
       B_window_rear++;
       for (int i = 0; i < 20; i++) {
-        B_window
-      [B_window_rear].data[i] = message.data[i];
+        B_window[B_window_rear].data[i] = message.data[i];
       }
       B_window_itemCount++;
     }
@@ -187,12 +179,10 @@ struct msg pop(AorB)
   if (AorB == 0) {
     A_window_front++;
     for (int i = 0; i < 20; i++) {
-        message.data[i] = A_window
-      [A_window_front].data[i];
+      message.data[i] = A_window[A_window_front].data[i];
     }
 
-    if(A_window_front == WINDOW_MAX_SIZE
-  ) {
+    if(A_window_front == WINDOW_MAX_SIZE) {
       A_window_front = 0;
     }
 	
@@ -201,12 +191,10 @@ struct msg pop(AorB)
   } else if (AorB == 1) {
     B_window_front++;
     for (int i = 0; i < 20; i++) {
-        message.data[i] = B_window
-      [B_window_front].data[i];
+      message.data[i] = B_window[B_window_front].data[i];
     }
 
-    if(B_window_front == WINDOW_MAX_SIZE
-  ) {
+    if(B_window_front == WINDOW_MAX_SIZE) {
       B_window_front = 0;
     }
 	
