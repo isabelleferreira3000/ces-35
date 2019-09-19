@@ -1,4 +1,4 @@
------  Stop and Wait Network Simulator Version 1.1 -------- 
+-----  Stop_buffer and Wait Network Simulator Version 1.1 -------- 
 
 Enter the number of messages to simulate: 
 nsimmax = 5
@@ -15,293 +15,181 @@ End A_init
 Start B_init
 End B_init
 
-EVENT time: 1870.573975,  type: 1, fromlayer5  entity: 1
-Start B_output
-Start create_packet
-Start checksum
-End checksum
-End create_packet
-COMECEI O TIMER DO B
-          TOLAYER3: packet being lost
-End B_output
-
-EVENT time: 2070.573975,  type: 0, timerinterrupt   entity: 1
-Start B_timerinterrupt
-COMECEI O TIMER DO B
-          TOLAYER3: packet being corrupted
-End B_timerinterrupt
-
-EVENT time: 2075.805664,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 999999 corrompido
-Start checksum
-End checksum
-Enviando NACK: -999999
-          TOLAYER3: packet being lost
-End A_input
-
-EVENT time: 2270.573975,  type: 0, timerinterrupt   entity: 1
-Start B_timerinterrupt
-COMECEI O TIMER DO B
-          TOLAYER3: packet being lost
-End B_timerinterrupt
-
-EVENT time: 2470.573975,  type: 0, timerinterrupt   entity: 1
-Start B_timerinterrupt
-COMECEI O TIMER DO B
-End B_timerinterrupt
-
-EVENT time: 2479.818604,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 1 nao corrompido: aaaaaaaaaaaaaaaaaaaa
-Mensagem normal 1: aaaaaaaaaaaaaaaaaaaa
-Start checksum
-End checksum
-Enviando ACK: 1
-          TOLAYER3: packet being lost
-End A_input
-
-EVENT time: 2670.573975,  type: 0, timerinterrupt   entity: 1
-Start B_timerinterrupt
-COMECEI O TIMER DO B
-End B_timerinterrupt
-
-EVENT time: 2672.052490,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 1 nao corrompido: aaaaaaaaaaaaaaaaaaaa
-Mensagem normal 1: aaaaaaaaaaaaaaaaaaaa
-Start checksum
-End checksum
-Enviando ACK: 1
-End A_input
-
-EVENT time: 2677.324707,  type: 2, fromlayer3  entity: 1
-Start B_input
-Start checksum
-End checksum
-Pacote 1 nao corrompido:                     
-Recebido ACK 1
-PAREI O TIMER DO B
-End B_input
-
-EVENT time: 2817.214111,  type: 1, fromlayer5  entity: 0
+EVENT time: 1870.573975,  type: 1, fromlayer5  entity: 0
 Start A_output
 Start create_packet
 Start checksum
 End checksum
 End create_packet
-COMECEI O TIMER DO A
+COMECEI O TIMER DO A PARA PACOTE: 1
           TOLAYER3: packet being corrupted
 End A_output
 
-EVENT time: 2826.232666,  type: 2, fromlayer3  entity: 1
+EVENT time: 1876.039062,  type: 2, fromlayer3  entity: 1
 Start B_input
 Start checksum
 End checksum
-Pacote 2 corrompido
-Start checksum
-End checksum
-Enviando NACK: -2
-          TOLAYER3: packet being corrupted
+Pacote 1 corrompido -> ignora
 End B_input
 
-EVENT time: 2828.599121,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 2 corrompido
-End A_input
-
-EVENT time: 3017.214111,  type: 0, timerinterrupt   entity: 0
-Start A_timerinterrupt
-COMECEI O TIMER DO A
-          TOLAYER3: packet being lost
-End A_timerinterrupt
-
-EVENT time: 3217.214111,  type: 0, timerinterrupt   entity: 0
-Start A_timerinterrupt
-COMECEI O TIMER DO A
-          TOLAYER3: packet being lost
-End A_timerinterrupt
-
-EVENT time: 3417.214111,  type: 0, timerinterrupt   entity: 0
+EVENT time: 2070.573975,  type: 0, timerinterrupt   entity: 0
 Start A_timerinterrupt
 COMECEI O TIMER DO A
 End A_timerinterrupt
 
-EVENT time: 3423.463135,  type: 2, fromlayer3  entity: 1
-Start B_input
-Start checksum
-End checksum
-Pacote 2 nao corrompido: bbbbbbbbbbbbbbbbbbbb
-Mensagem normal 2: bbbbbbbbbbbbbbbbbbbb
-Start checksum
-End checksum
-Enviando ACK: 2
-End B_input
+EVENT time: 2270.573975,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
 
-EVENT time: 3424.943848,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 2 nao corrompido:                     
-Recebido ACK 2
-PAREI O TIMER DO A
-End A_input
+EVENT time: 2470.573975,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
 
-EVENT time: 4253.417480,  type: 1, fromlayer5  entity: 0
+EVENT time: 2670.573975,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 2870.573975,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 3070.573975,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 3270.573975,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 3470.573975,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 3512.483887,  type: 1, fromlayer5  entity: 0
 Start A_output
 Start create_packet
 Start checksum
 End checksum
 End create_packet
-COMECEI O TIMER DO A
-          TOLAYER3: packet being corrupted
+          TOLAYER3: packet being lost
 End A_output
 
-EVENT time: 4263.176758,  type: 2, fromlayer3  entity: 1
-Start B_input
-Start checksum
-End checksum
-Pacote 3 corrompido
-Start checksum
-End checksum
-Enviando NACK: -3
-          TOLAYER3: packet being lost
-End B_input
-
-EVENT time: 4453.417480,  type: 0, timerinterrupt   entity: 0
+EVENT time: 3670.573975,  type: 0, timerinterrupt   entity: 0
 Start A_timerinterrupt
 COMECEI O TIMER DO A
 End A_timerinterrupt
 
-EVENT time: 4454.723633,  type: 2, fromlayer3  entity: 1
-Start B_input
-Start checksum
-End checksum
-Pacote 3 nao corrompido: cccccccccccccccccccc
-Mensagem normal 3: cccccccccccccccccccc
-Start checksum
-End checksum
-Enviando ACK: 3
-          TOLAYER3: packet being corrupted
-End B_input
-
-EVENT time: 4460.302246,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 3 corrompido
-End A_input
-
-EVENT time: 4653.417480,  type: 0, timerinterrupt   entity: 0
-Start A_timerinterrupt
-COMECEI O TIMER DO A
-          TOLAYER3: packet being corrupted
-End A_timerinterrupt
-
-EVENT time: 4659.667480,  type: 2, fromlayer3  entity: 1
-Start B_input
-Start checksum
-End checksum
-Pacote 3 corrompido
-Start checksum
-End checksum
-Enviando NACK: -3
-          TOLAYER3: packet being corrupted
-End B_input
-
-EVENT time: 4664.486816,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 3 corrompido
-End A_input
-
-EVENT time: 4853.417480,  type: 0, timerinterrupt   entity: 0
+EVENT time: 3870.573975,  type: 0, timerinterrupt   entity: 0
 Start A_timerinterrupt
 COMECEI O TIMER DO A
 End A_timerinterrupt
 
-EVENT time: 4857.079102,  type: 2, fromlayer3  entity: 1
-Start B_input
-Start checksum
-End checksum
-Pacote 3 nao corrompido: cccccccccccccccccccc
-Mensagem normal 3: cccccccccccccccccccc
-Start checksum
-End checksum
-Enviando ACK: 3
-          TOLAYER3: packet being corrupted
-End B_input
-
-EVENT time: 4865.989746,  type: 2, fromlayer3  entity: 0
-Start A_input
-Start checksum
-End checksum
-Pacote 3 corrompido
-End A_input
-
-EVENT time: 5053.417480,  type: 0, timerinterrupt   entity: 0
+EVENT time: 4070.573975,  type: 0, timerinterrupt   entity: 0
 Start A_timerinterrupt
 COMECEI O TIMER DO A
-          TOLAYER3: packet being corrupted
 End A_timerinterrupt
 
-EVENT time: 5059.035156,  type: 2, fromlayer3  entity: 1
-Start B_input
-Start checksum
-End checksum
-Pacote 3 corrompido
-Start checksum
-End checksum
-Enviando NACK: -3
-          TOLAYER3: packet being lost
-End B_input
-
-EVENT time: 5253.417480,  type: 0, timerinterrupt   entity: 0
+EVENT time: 4270.574219,  type: 0, timerinterrupt   entity: 0
 Start A_timerinterrupt
 COMECEI O TIMER DO A
-          TOLAYER3: packet being lost
 End A_timerinterrupt
 
-EVENT time: 5328.521973,  type: 1, fromlayer5  entity: 0
+EVENT time: 4452.842285,  type: 1, fromlayer5  entity: 0
 Start A_output
+Start create_packet
+Start checksum
+End checksum
+End create_packet
+          TOLAYER3: packet being lost
 End A_output
 
-EVENT time: 5453.417480,  type: 0, timerinterrupt   entity: 0
-Start A_timerinterrupt
-COMECEI O TIMER DO A
-          TOLAYER3: packet being lost
-End A_timerinterrupt
-
-EVENT time: 5653.417480,  type: 0, timerinterrupt   entity: 0
+EVENT time: 4470.574219,  type: 0, timerinterrupt   entity: 0
 Start A_timerinterrupt
 COMECEI O TIMER DO A
 End A_timerinterrupt
 
-EVENT time: 5655.530273,  type: 2, fromlayer3  entity: 1
+EVENT time: 4670.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 4870.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 5070.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 5270.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 5470.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 5670.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 5870.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 6070.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 6149.761230,  type: 1, fromlayer5  entity: 0
+Start A_output
+Start create_packet
+Start checksum
+End checksum
+End create_packet
+End A_output
+
+EVENT time: 6159.005859,  type: 2, fromlayer3  entity: 1
 Start B_input
 Start checksum
 End checksum
-Pacote 3 nao corrompido: cccccccccccccccccccc
-Mensagem normal 3: cccccccccccccccccccc
+Pacote 4 nao corrompido: dddddddddddddddddddd
+Mensagem normal 4: dddddddddddddddddddd
+SEQNUM NAO VEIO COMO ESPERADO -> ignora e reenvia antigo ACK
 Start checksum
 End checksum
-Enviando ACK: 3
+Enviando ACK: 0
           TOLAYER3: packet being lost
 End B_input
 
-EVENT time: 5750.136719,  type: 1, fromlayer5  entity: 0
+EVENT time: 6270.574219,  type: 0, timerinterrupt   entity: 0
+Start A_timerinterrupt
+COMECEI O TIMER DO A
+End A_timerinterrupt
+
+EVENT time: 6376.538086,  type: 1, fromlayer5  entity: 0
 Start A_output
+Start create_packet
+Start checksum
+End checksum
+End create_packet
+          TOLAYER3: packet being lost
 End A_output
 
-EVENT time: 5853.417480,  type: 0, timerinterrupt   entity: 0
- Simulator terminated at time 5853.417480
+EVENT time: 6470.574219,  type: 0, timerinterrupt   entity: 0
+ Simulator terminated at time 6470.574219
  after sending 5 msgs from layer5
