@@ -93,14 +93,14 @@ int B_window_itemCount = 0;
 struct msg top_window(AorB)
   int AorB;
 {
-  printf("Start top_window\n");
+  // printf("Start top_window\n");
 
   if (AorB == 0) {
-    printf("End top_window\n");
+    // printf("End top_window\n");
     return A_window[A_window_front];
 
   } else if (AorB == 1) {
-    printf("End top_window\n");
+    // printf("End top_window\n");
     return B_window[B_window_front];
   }
 }
@@ -108,13 +108,14 @@ struct msg top_window(AorB)
 bool isEmpty_window(AorB)
   int AorB;
 {
-  printf("Start isEmpty_window\n");
+  // printf("Start isEmpty_window\n");
+
   if (AorB == 0) {
-    printf("End isEmpty_window\n");
+    // printf("End isEmpty_window\n");
     return A_window_itemCount == 0;
 
   } else if (AorB == 1) {
-    printf("End isEmpty_window\n");
+    // printf("End isEmpty_window\n");
     return B_window_itemCount == 0;
   }
 }
@@ -122,14 +123,14 @@ bool isEmpty_window(AorB)
 bool isFull_window(AorB)
   int AorB;
 {
-  printf("Start isFull_window\n");
+  // printf("Start isFull_window\n");
 
   if (AorB == 0) {
-    printf("End isFull_window\n");
+    // printf("End isFull_window\n");
     return A_window_itemCount == WINDOW_MAX_SIZE;
 
   } else if (AorB == 1) {
-    printf("End isFull_window\n");
+    // printf("End isFull_window\n");
     return B_window_itemCount == WINDOW_MAX_SIZE;
   }
 }
@@ -137,14 +138,14 @@ bool isFull_window(AorB)
 int size_window(AorB)
   int AorB;
 {
-  printf("Start size_window\n");
+  // printf("Start size_window\n");
 
   if (AorB == 0) {
-    printf("End size_window\n");
+    // printf("End size_window\n");
     return A_window_itemCount;
 
   } else if (AorB == 1) {
-    printf("End size_window\n");
+    // printf("End size_window\n");
     return B_window_itemCount;
   }
 }
@@ -153,7 +154,7 @@ void push_window(AorB, message)
   int AorB;
   struct msg message;
 {
-  printf("Start push_window\n");
+  // printf("Start push_window\n");
 
   if (!isFull_window(AorB)) {
 
@@ -181,16 +182,15 @@ void push_window(AorB, message)
       }
       B_window_itemCount++;
     }
-       
   }
 
-  printf("End push_window\n");
+  // printf("End push_window\n");
 }
 
 struct msg pop_window(AorB)
   int AorB;
 {
-  printf("Start pop_window\n");
+  // printf("Start pop_window\n");
   struct msg message;
 
   if (AorB == 0) {
@@ -218,7 +218,7 @@ struct msg pop_window(AorB)
     B_window_itemCount--;
   }
 
-  printf("End pop_window\n");
+  // printf("End pop_window\n");
   return message;  
 }
 
@@ -266,14 +266,14 @@ void send_window(AorB) // chamado no timerinterrupt
 struct msg top_buffer(AorB)
   int AorB;
 {
-  printf("Start top_buffer\n");
+  // printf("Start top_buffer\n");
 
   if (AorB == 0) {
-    printf("End top_buffer\n");
+    // printf("End top_buffer\n");
     return A_buffer[A_front];
 
   } else if (AorB == 1) {
-    printf("End top_buffer\n");
+    // printf("End top_buffer\n");
     return B_buffer[B_front];
   }
 }
@@ -281,13 +281,13 @@ struct msg top_buffer(AorB)
 bool isEmpty_buffer(AorB)
   int AorB;
 {
-  printf("Start isEmpty_buffer\n");
+  // printf("Start isEmpty_buffer\n");
   if (AorB == 0) {
-    printf("End isEmpty_buffer\n");
+    // printf("End isEmpty_buffer\n");
     return A_itemCount == 0;
 
   } else if (AorB == 1) {
-    printf("End isEmpty_buffer\n");
+    // printf("End isEmpty_buffer\n");
     return B_itemCount == 0;
   }
 }
@@ -295,14 +295,14 @@ bool isEmpty_buffer(AorB)
 bool isFull_buffer(AorB)
   int AorB;
 {
-  printf("Start isFull_buffer\n");
+  // printf("Start isFull_buffer\n");
 
   if (AorB == 0) {
-    printf("End isFull_buffer\n");
+    // printf("End isFull_buffer\n");
     return A_itemCount == BUFFER_MAX_SIZE;
 
   } else if (AorB == 1) {
-    printf("End isFull_buffer\n");
+    // printf("End isFull_buffer\n");
     return B_itemCount == BUFFER_MAX_SIZE;
   }
 }
@@ -310,14 +310,14 @@ bool isFull_buffer(AorB)
 int size_buffer(AorB)
   int AorB;
 {
-  printf("Start size_buffer\n");
+  // printf("Start size_buffer\n");
 
   if (AorB == 0) {
-    printf("End size_buffer\n");
+    // printf("End size_buffer\n");
     return A_itemCount;
 
   } else if (AorB == 1) {
-    printf("End size_buffer\n");
+    // printf("End size_buffer\n");
     return B_itemCount;
   }
 }  
@@ -326,7 +326,7 @@ void push_buffer(AorB, message)
   int AorB;
   struct msg message;
 {
-  printf("Start push_buffer\n");
+  // printf("Start push_buffer\n");
 
   if (!isFull_buffer(AorB)) {
 
@@ -357,17 +357,17 @@ void push_buffer(AorB, message)
        
   } else {
     printf("Buffer cheio! exit(0)");
-    printf("End push_buffer\n");
+    // printf("End push_buffer\n");
     exit(0);
   }
 
-  printf("End push_buffer\n");
+  // printf("End push_buffer\n");
 }
 
 struct msg pop_buffer(AorB)
   int AorB;
 {
-  printf("Start pop_buffer\n");
+  // printf("Start pop_buffer\n");
 
   struct msg message;
 
@@ -396,7 +396,7 @@ struct msg pop_buffer(AorB)
     B_itemCount--;
   }
 
-  printf("End pop_buffer\n");
+  // printf("End pop_buffer\n");
   return message;  
 }
 
