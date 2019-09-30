@@ -90,7 +90,7 @@ int B_window_itemCount;
 
 /* FUNCOES REFERENTES A WINDOW */
 
-struct msg top_window(AorB)
+struct pkt top_window(AorB)
   int AorB;
 {
   // printf("Start top_window\n");
@@ -150,9 +150,9 @@ int size_window(AorB)
   }
 }
 
-void push_window(AorB, message)
+void push_window(AorB, packet)
   int AorB;
-  struct msg message;
+  struct pkt packet;
 {
   // printf("Start push_window\n");
 
@@ -165,8 +165,12 @@ void push_window(AorB, message)
       }       
       
       A_window_rear++;
+
+      A_window[A_window_rear].seqnum = packet.seqnum;
+      A_window[A_window_rear].acknum = packet.acknum;
+      A_window[A_window_rear].checksum = packet.checksum;
       for (int i = 0; i < 20; i++) {
-        A_window[A_window_rear].data[i] = message.data[i];
+        A_window[A_window_rear].payload[i] = packet.payload[i];
       }
       A_window_itemCount++;
 
@@ -177,8 +181,12 @@ void push_window(AorB, message)
       }       
       
       B_window_rear++;
+
+      B_window[B_window_rear].seqnum = packet.seqnum;
+      B_window[B_window_rear].acknum = packet.acknum;
+      B_window[B_window_rear].checksum = packet.checksum;
       for (int i = 0; i < 20; i++) {
-        B_window[B_window_rear].data[i] = message.data[i];
+        B_window[B_window_rear].payload[i] = packet.payload[i];
       }
       B_window_itemCount++;
     }
@@ -187,16 +195,20 @@ void push_window(AorB, message)
   // printf("End push_window\n");
 }
 
-struct msg pop_window(AorB)
+struct pkt pop_window(AorB)
   int AorB;
 {
   // printf("Start pop_window\n");
-  struct msg message;
+  struct pkt packet;
 
   if (AorB == 0) {
-    A_window_front++;
+    A_window_front++; // TODO: isso vai depois do for abaixo, nao?
+
+    packet.seqnum = A_window[A_window_front].seqnum;
+    packet.acknum = A_window[A_window_front].acknum;
+    packet.checksum = A_window[A_window_front].checksum;
     for (int i = 0; i < 20; i++) {
-      message.data[i] = A_window[A_window_front].data[i];
+      packet.payload[i] = A_window[A_window_front].payload[i];
     }
 
     if(A_window_front == WINDOW_MAX_SIZE) {
@@ -206,9 +218,13 @@ struct msg pop_window(AorB)
     A_window_itemCount--;
 
   } else if (AorB == 1) {
-    B_window_front++;
+    B_window_front++; // TODO: isso vai depois do for abaixo, nao?
+
+    packet.seqnum = B_window[B_window_front].seqnum;
+    packet.acknum = B_window[B_window_front].acknum;
+    packet.checksum = B_window[B_window_front].checksum;
     for (int i = 0; i < 20; i++) {
-      message.data[i] = B_window[B_window_front].data[i];
+      packet.payload[i] = B_window[B_window_front].payload[i];
     }
 
     if(B_window_front == WINDOW_MAX_SIZE) {
@@ -219,7 +235,7 @@ struct msg pop_window(AorB)
   }
 
   // printf("End pop_window\n");
-  return message;  
+  return packet;  
 }
 
 void print_window(AorB)
@@ -310,7 +326,7 @@ void send_window(AorB) // chamado no timerinterrupt
 
 /* FUNCOES REFERENTES AO BUFFER */
 
-struct msg top_buffer(AorB)
+struct pkt top_buffer(AorB)
   int AorB;
 {
   // printf("Start top_buffer\n");
@@ -369,9 +385,9 @@ int size_buffer(AorB)
   }
 }  
 
-void push_buffer(AorB, message)
+void push_buffer(AorB, packet)
   int AorB;
-  struct msg message;
+  struct pkt packet;
 {
   // printf("Start push_buffer\n");
 
@@ -384,8 +400,11 @@ void push_buffer(AorB, message)
       }       
       
       A_rear++;
+      A_buffer[A_rear].seqnum = packet.seqnum;
+      A_buffer[A_rear].acknum = packet.acknum;
+      A_buffer[A_rear].checksum = packet.checksum;
       for (int i = 0; i < 20; i++) {
-        A_buffer[A_rear].data[i] = message.data[i];
+        A_buffer[A_rear].payload[i] = packet.payload[i];
       }
       A_itemCount++;
 
@@ -396,8 +415,11 @@ void push_buffer(AorB, message)
       }       
       
       B_rear++;
+      B_buffer[B_rear].seqnum = packet.seqnum;
+      B_buffer[B_rear].acknum = packet.acknum;
+      B_buffer[B_rear].checksum = packet.checksum;
       for (int i = 0; i < 20; i++) {
-        B_buffer[B_rear].data[i] = message.data[i];
+        B_buffer[B_rear].payload[i] = packet.payload[i];
       }
       B_itemCount++;
     }
@@ -411,17 +433,20 @@ void push_buffer(AorB, message)
   // printf("End push_buffer\n");
 }
 
-struct msg pop_buffer(AorB)
+struct pkt pop_buffer(AorB)
   int AorB;
 {
   // printf("Start pop_buffer\n");
 
-  struct msg message;
+  struct pkt packet;
 
   if (AorB == 0) {
     A_front++;
+    packet.seqnum = A_buffer[A_front].seqnum;
+    packet.acknum = A_buffer[A_front].acknum;
+    packet.checksum = A_buffer[A_front].checksum;
     for (int i = 0; i < 20; i++) {
-        message.data[i] = A_buffer[A_front].data[i];
+        packet.payload[i] = A_buffer[A_front].payload[i];
     }
 
     if(A_front == BUFFER_MAX_SIZE) {
@@ -432,8 +457,11 @@ struct msg pop_buffer(AorB)
 
   } else if (AorB == 1) {
     B_front++;
+    packet.seqnum = B_buffer[B_front].seqnum;
+    packet.acknum = B_buffer[B_front].acknum;
+    packet.checksum = B_buffer[B_front].checksum;
     for (int i = 0; i < 20; i++) {
-        message.data[i] = B_buffer[B_front].data[i];
+        packet.payload[i] = B_buffer[B_front].payload[i];
     }
 
     if(B_front == BUFFER_MAX_SIZE) {
@@ -444,7 +472,7 @@ struct msg pop_buffer(AorB)
   }
 
   // printf("End pop_buffer\n");
-  return message;  
+  return packet;  
 }
 
 struct pkt create_packet(AorB, message)
@@ -550,11 +578,7 @@ void A_input(packet)
     printf("\n");
   
     if (packet.acknum == 0) { // normal message
-      printf("Mensagem normal %d: ", packet.seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
-      }
-      printf("\n");
+      printf("Mensagem normal\n");
 
       A_sent_first = 0;
 
@@ -567,7 +591,7 @@ void A_input(packet)
         ack.seqnum = packet.seqnum;
         ack.acknum = packet.seqnum;
         for (int i = 0; i < 20; i++) {
-          ack.payload[i] = ' ';
+          ack.payload[i] = '-';
         }
         ack.checksum = get_checksum(ack);
 
@@ -582,7 +606,7 @@ void A_input(packet)
         ack.seqnum = packet.seqnum;
         ack.acknum = A_expected_seqnum - 1;
         for (int i = 0; i < 20; i++) {
-          ack.payload[i] = ' ';
+          ack.payload[i] = '-';
         }
         ack.checksum = get_checksum(ack);
 
@@ -596,14 +620,14 @@ void A_input(packet)
 
       pop_window(0);
       if (!isEmpty_buffer(0)) {
-        struct msg message = pop_buffer(0);
-        push_window(1, message);
+        struct pkt packet = pop_buffer(0);
+        push_window(1, packet);
       }
 
-      if (isEmpty_window(0)) {
-        printf("PAREI O TIMER DO A\n");
-        stop_buffertimer(0);  
-      } else {
+      printf("PAREI O TIMER DO A\n");
+      stop_buffertimer(0);
+
+      if (!isEmpty_window(0)) {
         printf("COMECEI O TIMER DO A\n");
         starttimer(0, A_increment);
       }
@@ -636,21 +660,17 @@ void B_input(packet)
   
     if (packet.acknum == 0){ // normal message
 
-      printf("Mensagem normal %d: ", packet.seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
-      }
-      printf("\n");
+      printf("Mensagem normal %d\n");
 
       B_sent_first = 0;
 
       if (packet.seqnum == B_expected_seqnum) {
-        printf("SEQNUM VEIO COMO ESPERADO\n");
+        printf("Seqnum %d veio como esperado\n", packet.seqnum);
         struct pkt ack;
         ack.seqnum = packet.seqnum;
         ack.acknum = packet.seqnum;
         for (int i = 0; i < 20; i++) {
-          ack.payload[i] = ' ';
+          ack.payload[i] = '-';
         }
         ack.checksum = get_checksum(ack);
 
@@ -659,13 +679,14 @@ void B_input(packet)
         tolayer5(1, packet.payload);
 
       } else {
-        printf("SEQNUM NAO VEIO COMO ESPERADO -> ignora e reenvia antigo ACK\n");
+        printf("Seqnum %d nao veio como esperado %d -> ignora e reenvia antigo ACK %d\n", 
+          packet.seqnum, B_expected_seqnum, B_expected_seqnum - 1);
         
         struct pkt ack;
         ack.seqnum = packet.seqnum;
-        ack.acknum = A_expected_seqnum - 1;
+        ack.acknum = B_expected_seqnum - 1;
         for (int i = 0; i < 20; i++) {
-          ack.payload[i] = ' ';
+          ack.payload[i] = '-';
         }
         ack.checksum = get_checksum(ack);
 
@@ -679,14 +700,14 @@ void B_input(packet)
 
       pop_window(1);
       if (!isEmpty_buffer(1)) {
-        struct msg message = pop_buffer(1);
-        push_window(1, message);
+        struct pkt packet = pop_buffer(1);
+        push_window(1, packet);
       }
 
-      if (isEmpty_window(1)) {
-        printf("PAREI O TIMER DO B\n");
-        stop_buffertimer(1);  
-      } else {
+      printf("PAREI O TIMER DO B\n");
+      stop_buffertimer(1); 
+
+      if (!isEmpty_window(1)) {
         printf("COMECEI O TIMER DO B\n");
         starttimer(1, B_increment);
       }
