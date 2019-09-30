@@ -202,7 +202,6 @@ struct pkt pop_window(AorB)
   struct pkt packet;
 
   if (AorB == 0) {
-    A_window_front++; // TODO: isso vai depois do for abaixo, nao?
 
     packet.seqnum = A_window[A_window_front].seqnum;
     packet.acknum = A_window[A_window_front].acknum;
@@ -211,6 +210,8 @@ struct pkt pop_window(AorB)
       packet.payload[i] = A_window[A_window_front].payload[i];
     }
 
+    A_window_front++;
+
     if(A_window_front == WINDOW_MAX_SIZE) {
       A_window_front = 0;
     }
@@ -218,7 +219,6 @@ struct pkt pop_window(AorB)
     A_window_itemCount--;
 
   } else if (AorB == 1) {
-    B_window_front++; // TODO: isso vai depois do for abaixo, nao?
 
     packet.seqnum = B_window[B_window_front].seqnum;
     packet.acknum = B_window[B_window_front].acknum;
@@ -227,12 +227,19 @@ struct pkt pop_window(AorB)
       packet.payload[i] = B_window[B_window_front].payload[i];
     }
 
+    B_window_front++;
+
     if(B_window_front == WINDOW_MAX_SIZE) {
       B_window_front = 0;
     }
 	
     B_window_itemCount--;
   }
+  printf("pop pacote %d: ", packet.seqnum);
+  for (int i = 0; i < 20; i++) {
+    printf("%c", packet.payload[i]);
+  }
+  printf("\n");
 
   // printf("End pop_window\n");
   return packet;  
@@ -251,13 +258,10 @@ void print_window(AorB)
       printf("Window A nao vazia, tamanho %d\n", size_window(0));
 
       for (int i = 0; i < size_window(0); i++) {
-        packet.seqnum = A_window[(A_front+i) % WINDOW_MAX_SIZE].seqnum;
-        packet.acknum = A_window[(A_front+i) % WINDOW_MAX_SIZE].acknum;
-        packet.checksum = A_window[(A_front+i) % WINDOW_MAX_SIZE].checksum;
-        printf("Mensagem %d: ", packet.seqnum);
+        printf("Mensagem %d: ", A_window[(A_window_front+i) % WINDOW_MAX_SIZE].seqnum);
         
         for (int j = 0; j < 20; j++) {
-          printf("%c", packet.payload[j]);
+          printf("%c", A_window[(A_window_front+i) % WINDOW_MAX_SIZE].payload[j]);
         }
         printf("\n");
       }
@@ -272,13 +276,10 @@ void print_window(AorB)
       printf("Window B nao vazia, tamanho %d\n", size_window(1));
 
       for (int i = 0; i < size_window(1); i++) {
-        packet.seqnum = B_window[(B_front+i) % WINDOW_MAX_SIZE].seqnum;
-        packet.acknum = B_window[(B_front+i) % WINDOW_MAX_SIZE].acknum;
-        packet.checksum = B_window[(B_front+i) % WINDOW_MAX_SIZE].checksum;
-        printf("Mensagem %d: ", packet.seqnum);
+        printf("Mensagem %d: ", B_window[(B_window_front+i) % WINDOW_MAX_SIZE].seqnum);
         
         for (int j = 0; j < 20; j++) {
-          printf("%c", packet.payload[j]);
+          printf("%c", B_window[(B_window_front+i) % WINDOW_MAX_SIZE].payload[j]);
         }
         printf("\n");
       }
@@ -299,25 +300,25 @@ void send_window(AorB) // chamado no timerinterrupt
   if (AorB == 0) {
 
     for (int i = 0; i < size_window(0); i++) {
-      printf("Enviando pacote %d: \n", A_window[(A_front+i) % WINDOW_MAX_SIZE].seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", A_window[(A_front+i) % WINDOW_MAX_SIZE].payload[i]);
-      }
-      printf("\n");
+      printf("Enviando pacote %d\n", A_window[(A_window_front+i) % WINDOW_MAX_SIZE].seqnum);
+      // for (int i = 0; i < 20; i++) {
+      //   printf("%c", A_window[(A_front+i) % WINDOW_MAX_SIZE].payload[i]);
+      // }
+      // printf("\n");
 
-      tolayer3(0, A_window[(A_front+i) % WINDOW_MAX_SIZE]);
+      tolayer3(0, A_window[(A_window_front+i) % WINDOW_MAX_SIZE]);
     }
 
   } else if (AorB == 1) {
 
     for (int i = 0; i < size_window(1); i++) {
-      printf("Enviando pacote %d: \n", B_window[(B_front+i) % WINDOW_MAX_SIZE].seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", B_window[(B_front+i) % WINDOW_MAX_SIZE].payload[i]);
-      }
-      printf("\n");
+      printf("Enviando pacote %d\n", B_window[(B_window_front+i) % WINDOW_MAX_SIZE].seqnum);
+      // for (int i = 0; i < 20; i++) {
+      //   printf("%c", B_window[(B_front+i) % WINDOW_MAX_SIZE].payload[i]);
+      // }
+      // printf("\n");
 
-      tolayer3(1, B_window[(B_front+i) % WINDOW_MAX_SIZE]);
+      tolayer3(1, B_window[(B_window_front+i) % WINDOW_MAX_SIZE]);
     }
   }
 
@@ -441,13 +442,15 @@ struct pkt pop_buffer(AorB)
   struct pkt packet;
 
   if (AorB == 0) {
-    A_front++;
+    
     packet.seqnum = A_buffer[A_front].seqnum;
     packet.acknum = A_buffer[A_front].acknum;
     packet.checksum = A_buffer[A_front].checksum;
     for (int i = 0; i < 20; i++) {
         packet.payload[i] = A_buffer[A_front].payload[i];
     }
+
+    A_front++;
 
     if(A_front == BUFFER_MAX_SIZE) {
       A_front = 0;
@@ -456,13 +459,15 @@ struct pkt pop_buffer(AorB)
     A_itemCount--;
 
   } else if (AorB == 1) {
-    B_front++;
+    
     packet.seqnum = B_buffer[B_front].seqnum;
     packet.acknum = B_buffer[B_front].acknum;
     packet.checksum = B_buffer[B_front].checksum;
     for (int i = 0; i < 20; i++) {
         packet.payload[i] = B_buffer[B_front].payload[i];
     }
+
+    B_front++;
 
     if(B_front == BUFFER_MAX_SIZE) {
       B_front = 0;
@@ -472,6 +477,12 @@ struct pkt pop_buffer(AorB)
   }
 
   // printf("End pop_buffer\n");
+  printf("pop pacote %d: ", packet.seqnum);
+  for (int i = 0; i < 20; i++) {
+    printf("%c", packet.payload[i]);
+  }
+  printf("\n");
+
   return packet;  
 }
 
@@ -584,6 +595,7 @@ void A_input(packet)
 
       if (packet.seqnum == A_expected_seqnum) {
         printf("Seqnum %d veio como esperado\n", packet.seqnum);
+        A_expected_seqnum++;
 
         tolayer5(0, packet.payload);
 
@@ -619,6 +631,8 @@ void A_input(packet)
       A_sent_first = 0;
 
       pop_window(0);
+      print_window(0);
+
       if (!isEmpty_buffer(0)) {
         struct pkt packet = pop_buffer(0);
         push_window(1, packet);
@@ -660,12 +674,14 @@ void B_input(packet)
   
     if (packet.acknum == 0){ // normal message
 
-      printf("Mensagem normal %d\n");
+      printf("Mensagem normal\n");
 
       B_sent_first = 0;
 
       if (packet.seqnum == B_expected_seqnum) {
         printf("Seqnum %d veio como esperado\n", packet.seqnum);
+        B_expected_seqnum++;
+
         struct pkt ack;
         ack.seqnum = packet.seqnum;
         ack.acknum = packet.seqnum;
@@ -699,6 +715,8 @@ void B_input(packet)
       B_sent_first = 0;
 
       pop_window(1);
+      print_window(1);
+
       if (!isEmpty_buffer(1)) {
         struct pkt packet = pop_buffer(1);
         push_window(1, packet);
@@ -729,13 +747,20 @@ void A_output(message)
 {
   printf("Start A_output\n");
 
+  struct pkt packet;
+  packet = create_packet(0, message);
+
   if (!isFull_window(0)) {
     A_sent_first = 1;
 
-    push_window(0, message);
+    printf("Adicionando pacote %d na window: ", packet.seqnum);
+    for (int i = 0; i < 20; i++) {
+      printf("%c", packet.payload[i]);
+    }
+    printf("\n");
 
-    struct pkt packet;
-    packet = create_packet(0, message);
+    push_window(0, packet);
+
     
     if (size_window(0) == 1) {
       printf("COMECEI O TIMER DO A PARA PACOTE: %d\n", packet.seqnum);
@@ -746,7 +771,7 @@ void A_output(message)
 
   } else {
     printf("WINDOW CHEIA: ADICIONANDO AO BUFFER\n");
-    push_buffer(0, message);
+    push_buffer(0, packet);
   }
 
   print_window(0);
@@ -758,13 +783,14 @@ void B_output(message)  /* need be completed only for extra credit */
 {
   printf("Start B_output\n");
 
+  struct pkt packet;
+  packet = create_packet(1, message);
+
   if (!isFull_window(1)) {
     B_sent_first = 1;
 
+    printf("Adicionando pacote %d na window\n", packet.seqnum);
     push_window(1, message);
-
-    struct pkt packet;
-    packet = create_packet(0, message);
 
     if (size_window(1) == 1) {
       printf("COMECEI O TIMER DO B PARA PACOTE: %d\n", packet.seqnum);
@@ -787,7 +813,7 @@ void A_timerinterrupt()
 {
   printf("Start A_timerinterrupt\n");
 
-  printf("Comecei timer do A para seqnum %d\n", A_seqnum+1);
+  printf("Comecei timer do A para seqnum %d\n", A_seqnum);
   starttimer(0, A_increment);
   send_window(0);
 
@@ -801,7 +827,7 @@ void B_timerinterrupt()
 {
   printf("Start B_timerinterrupt\n");
 
-  printf("COMECEI O TIMER DO B\n");
+  printf("Comecei timer do B para seqnum %d\n", B_seqnum);
   starttimer(1, B_increment);
   send_window(1);
 
