@@ -65,28 +65,28 @@ int A_seqnum;
 int A_expected_seqnum;
 int A_sent_first;
 int A_last_seqnum_received;
-struct msg A_buffer[BUFFER_MAX_SIZE];
-int A_front = 0;
-int A_rear = -1;
-int A_itemCount = 0;
-struct msg A_window[WINDOW_MAX_SIZE];
-int A_window_front = 0;
-int A_window_rear = -1;
-int A_window_itemCount = 0;
+struct pkt A_buffer[BUFFER_MAX_SIZE];
+int A_front;
+int A_rear;
+int A_itemCount;
+struct pkt A_window[WINDOW_MAX_SIZE];
+int A_window_front;
+int A_window_rear;
+int A_window_itemCount;
 
 float B_increment = 200.0;
 int B_seqnum;
 int B_expected_seqnum;
 int B_sent_first;
 int B_last_seqnum_received;
-struct msg B_buffer[BUFFER_MAX_SIZE];
-int B_front = 0;
-int B_rear = -1;
-int B_itemCount = 0;
-struct msg B_window[WINDOW_MAX_SIZE];
-int B_window_front = 0;
-int B_window_rear = -1;
-int B_window_itemCount = 0;
+struct pkt B_buffer[BUFFER_MAX_SIZE];
+int B_front;
+int B_rear;
+int B_itemCount;
+struct pkt B_window[WINDOW_MAX_SIZE];
+int B_window_front;
+int B_window_rear;
+int B_window_itemCount;
 
 /* FUNCOES REFERENTES A WINDOW */
 
@@ -222,39 +222,86 @@ struct msg pop_window(AorB)
   return message;  
 }
 
+void print_window(AorB)
+  int AorB;
+{
+  printf("Start print_window\n");
+
+  struct pkt packet;
+  
+  if (AorB == 0) {
+
+    if (!isEmpty_window(0)) {
+      printf("Window A nao vazia, tamanho %d\n", size_window(0));
+
+      for (int i = 0; i < size_window(0); i++) {
+        packet.seqnum = A_window[(A_front+i) % WINDOW_MAX_SIZE].seqnum;
+        packet.acknum = A_window[(A_front+i) % WINDOW_MAX_SIZE].acknum;
+        packet.checksum = A_window[(A_front+i) % WINDOW_MAX_SIZE].checksum;
+        printf("Mensagem %d: ", packet.seqnum);
+        
+        for (int j = 0; j < 20; j++) {
+          printf("%c", packet.payload[j]);
+        }
+        printf("\n");
+      }
+
+    } else {
+      printf("Window A vazia\n");
+    }
+
+  } else if (AorB == 1) {
+
+    if (!isEmpty_window(1)) {
+      printf("Window B nao vazia, tamanho %d\n", size_window(1));
+
+      for (int i = 0; i < size_window(1); i++) {
+        packet.seqnum = B_window[(B_front+i) % WINDOW_MAX_SIZE].seqnum;
+        packet.acknum = B_window[(B_front+i) % WINDOW_MAX_SIZE].acknum;
+        packet.checksum = B_window[(B_front+i) % WINDOW_MAX_SIZE].checksum;
+        printf("Mensagem %d: ", packet.seqnum);
+        
+        for (int j = 0; j < 20; j++) {
+          printf("%c", packet.payload[j]);
+        }
+        printf("\n");
+      }
+
+    } else {
+      printf("Window B vazia\n");
+    }
+  }
+
+  printf("End print_window\n");
+}
+
 void send_window(AorB) // chamado no timerinterrupt
   int AorB;
 {
   printf("Start send_window\n");
 
-  struct pkt packet;
-  struct msg aux;
   if (AorB == 0) {
-    for (int i = 0; i < size_window(A_window); i++) {
-      aux = A_window[(A_window_front + i) % WINDOW_MAX_SIZE];
-      packet = create_packet(0, aux);
 
-      printf("Enviando pacote %d: \n", packet.seqnum);
+    for (int i = 0; i < size_window(0); i++) {
+      printf("Enviando pacote %d: \n", A_window[(A_front+i) % WINDOW_MAX_SIZE].seqnum);
       for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
+        printf("%c", A_window[(A_front+i) % WINDOW_MAX_SIZE].payload[i]);
       }
       printf("\n");
 
-      tolayer3(0, packet);
+      tolayer3(0, A_window[(A_front+i) % WINDOW_MAX_SIZE]);
     }
 
   } else if (AorB == 1) {
-    for (int i = 0; i < size_window(A_window); i++) {
-      aux = A_window[(A_window_front + i) % WINDOW_MAX_SIZE];
-      packet = create_packet(1, aux);
-      
-      printf("Enviando pacote %d: \n", packet.seqnum);
+
+    for (int i = 0; i < size_window(1); i++) {
+      printf("Enviando pacote %d: \n", B_window[(B_front+i) % WINDOW_MAX_SIZE].seqnum);
       for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
+        printf("%c", B_window[(B_front+i) % WINDOW_MAX_SIZE].payload[i]);
       }
       printf("\n");
 
-      tolayer3(0, packet);
+      tolayer3(1, B_window[(B_front+i) % WINDOW_MAX_SIZE]);
     }
   }
 
@@ -453,6 +500,14 @@ void A_init()
   A_sent_first = 0;
   A_last_seqnum_received = 0;
 
+  A_front = 0;
+  A_rear = -1;
+  A_itemCount = 0;
+
+  A_window_front = 0;
+  A_window_rear = -1;
+  A_window_itemCount = 0;
+
   printf("End A_init\n");
 }
 
@@ -467,6 +522,14 @@ void B_init()
   B_expected_seqnum = 1;
   B_sent_first = 0;
   B_last_seqnum_received = 0;
+
+  B_front = 0;
+  B_rear = -1;
+  B_itemCount = 0;
+
+  B_window_front = 0;
+  B_window_rear = -1;
+  B_window_itemCount = 0;
 
   printf("End B_init\n");
 }
@@ -665,6 +728,7 @@ void A_output(message)
     push_buffer(0, message);
   }
 
+  print_window(0);
   printf("End A_output\n");
 }
 
@@ -693,6 +757,7 @@ void B_output(message)  /* need be completed only for extra credit */
     push_buffer(1, message);
   }
 
+  print_window(1);
   printf("End B_output\n");
 }
 
