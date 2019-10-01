@@ -966,15 +966,15 @@ void init()                         /* initialize the simulator */
 
    printf("-----  Stop_buffer and Wait Network Simulator Version 1.1 -------- \n\n");
    printf("Enter the number of messages to simulate: ");
-   nsimmax = 5;
+   nsimmax = 10;
    printf("\nnsimmax = %d\n", nsimmax);
   //  scanf("%d",&nsimmax);
    printf("Enter  packet loss probability [enter 0.0 for no loss]:");
-   lossprob = 0.3;
+   lossprob = 0.2;
    printf("\nlossprob = %f\n", lossprob);
   //  scanf("%f",&lossprob);
    printf("Enter packet corruption probability [0.0 for no corruption]:");
-   corruptprob = 0.3;
+   corruptprob = 0.2;
    printf("\ncorruptprob = %f\n", corruptprob);
   //  scanf("%f",&corruptprob);
    printf("Enter average time between messages from sender's layer5 [ > 0.0]:");

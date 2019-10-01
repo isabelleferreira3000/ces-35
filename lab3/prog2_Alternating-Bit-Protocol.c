@@ -17,7 +17,7 @@
      (although some can be lost).
 **********************************************************************/
 
-#define BIDIRECTIONAL 1    /* change to 1 if you're doing extra credit */
+#define BIDIRECTIONAL 0    /* change to 1 if you're doing extra credit */
                            /* and write a routine called B_output */
 
 /* a "msg" is the data unit passed from layer 5 (teachers code) to layer  */
@@ -178,11 +178,7 @@ void A_input(packet)
   
     if (packet.acknum == 0){ // normal message
 
-      printf("Mensagem normal %d: ", packet.seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
-      }
-      printf("\n");
+      printf("Mensagem normal\n");
 
       A_sent_first = 0;
 
@@ -190,7 +186,7 @@ void A_input(packet)
       ack.seqnum = packet.seqnum;
       ack.acknum = packet.seqnum;
       for (int i = 0; i < 20; i++) {
-        ack.payload[i] = ' ';
+        ack.payload[i] = '-';
       }
       ack.checksum = get_checksum(ack);
 
@@ -217,13 +213,15 @@ void A_input(packet)
       printf("PAREI O TIMER DO A\n");
       stoptimer(0);
 
+      printf("Comecei timer do A\n");
+      starttimer(0, A_increment);
+
       printf("Reenviando pacote %d: ", A_current_packet.seqnum);
       for (int i = 0; i < 20; i++) {
         printf("%c", A_current_packet.payload[i]);
       }
       printf("\n");
-      printf("COMECEI O TIMER DO A\n");
-      starttimer(0, A_increment);
+
       tolayer3(0, A_current_packet);
     }
 
@@ -235,7 +233,7 @@ void A_input(packet)
       nack.seqnum = packet.seqnum;
       nack.acknum = -packet.seqnum;
       for (int i = 0; i < 20; i++) {
-        nack.payload[i] = ' ';
+        nack.payload[i] = '-';
       }
       nack.checksum = get_checksum(nack);
 
@@ -264,11 +262,7 @@ void B_input(packet)
     printf("\n");
   
     if (packet.acknum == 0){ // normal message
-      printf("Mensagem normal %d: ", packet.seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", packet.payload[i]);
-      }
-      printf("\n");
+      printf("Mensagem normal\n");
 
       B_sent_first = 0;
 
@@ -276,7 +270,7 @@ void B_input(packet)
       ack.seqnum = packet.seqnum;
       ack.acknum = packet.seqnum;
       for (int i = 0; i < 20; i++) {
-        ack.payload[i] = ' ';
+        ack.payload[i] = '-';
       }
       ack.checksum = get_checksum(ack);
 
@@ -304,17 +298,19 @@ void B_input(packet)
         printf("%c", packet.payload[i]);
       }
       printf("\n");
-      printf("PAREI O TIMER DO B\n");
+
+      printf("Parei timer do B\n");
       stoptimer(1);
 
-      printf("Reenviando pacote %d: ", B_current_packet.seqnum);
-      for (int i = 0; i < 20; i++) {
-        printf("%c", B_current_packet.payload[i]);
+      printf("Comecei timer do B\n");
+      starttimer(1, B_increment);
+
+      printf("Renviando pacote %d: ", B_current_packet.seqnum);
+      for (int j = 0; j < 20; j++) {
+        printf("%c", B_current_packet.payload[j]);
       }
       printf("\n");
 
-      printf("COMECEI O TIMER DO B\n");
-      starttimer(1, B_increment);
       tolayer3(1, B_current_packet);
     }
 
@@ -326,7 +322,7 @@ void B_input(packet)
       nack.seqnum = packet.seqnum;
       nack.acknum = -packet.seqnum;
       for (int i = 0; i < 20; i++) {
-        nack.payload[i] = ' ';
+        nack.payload[i] = '-';
       }
       nack.checksum = get_checksum(nack);
 
@@ -359,14 +355,15 @@ void A_output(message)
       A_current_packet.payload[i] = packet.payload[i];
     }
 
+    printf("Comecei timer do A\n");
+    starttimer(0, A_increment);
+
     printf("Enviando pacote %d: ", packet.seqnum);
     for (int i = 0; i < 20; i++) {
       printf("%c", packet.payload[i]);
     }
     printf("\n");
 
-    printf("COMECEI O TIMER DO A\n");
-    starttimer(0, A_increment);
     tolayer3(0, packet);
   }
 
@@ -392,15 +389,16 @@ void B_output(message)  /* need be completed only for extra credit */
     for (int i = 0; i < 20; i++) {
       B_current_packet.payload[i] = packet.payload[i];
     }
+    
+    printf("Comecei timer do B\n");
+    starttimer(1, B_increment);
 
     printf("Enviando pacote %d: ", packet.seqnum);
     for (int i = 0; i < 20; i++) {
       printf("%c", packet.payload[i]);
     }
     printf("\n");
-    
-    printf("COMECEI O TIMER DO B\n");
-    starttimer(1, B_increment);
+
     tolayer3(1, packet);
   }
 
@@ -412,14 +410,15 @@ void A_timerinterrupt()
 {
   printf("Start A_timerinterrupt\n");
 
+  printf("Comecei timer do A\n");
+  starttimer(0, A_increment);
+
   printf("Reenviando pacote %d: ", A_current_packet.seqnum);
   for (int i = 0; i < 20; i++) {
     printf("%c", A_current_packet.payload[i]);
   }
   printf("\n");
 
-  printf("COMECEI O TIMER DO A\n");
-  starttimer(0, A_increment);
   tolayer3(0, A_current_packet);
 
   printf("End A_timerinterrupt\n");
@@ -432,14 +431,15 @@ void B_timerinterrupt()
 {
   printf("Start B_timerinterrupt\n");
 
+  printf("COMECEI O TIMER DO B\n");
+  starttimer(1, B_increment);
+
   printf("Reenviando pacote %d: ", B_current_packet.seqnum);
   for (int i = 0; i < 20; i++) {
     printf("%c", B_current_packet.payload[i]);
   }
   printf("\n");
 
-  printf("COMECEI O TIMER DO B\n");
-  starttimer(1, B_increment);
   tolayer3(1, B_current_packet);
 
   printf("End B_timerinterrupt\n");
