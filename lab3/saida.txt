@@ -53,11 +53,11 @@ End checksum
 Pacote 1 nao corrompido: aaaaaaaaaaaaaaaaaaaa
 Mensagem normal
 Seqnum 1 veio como esperado
+Enviando mensagem para layer 5
 Start checksum
 End checksum
 Enviando ACK: 1
           TOLAYER3: packet being lost
-Enviando mensagem para layer 5
 End B_input
 
 EVENT time: 2270.573975,  type: 0, timerinterrupt   entity: 0
@@ -120,7 +120,7 @@ Pop pacote 1: aaaaaaaaaaaaaaaaaaaa
 Start print_window
 Window A vazia
 End print_window
-PAREI O TIMER DO A
+Parei timer do A
 End A_input
 
 EVENT time: 3512.483887,  type: 1, fromlayer5  entity: 0
@@ -145,11 +145,11 @@ End checksum
 Pacote 2 nao corrompido: bbbbbbbbbbbbbbbbbbbb
 Mensagem normal
 Seqnum 2 veio como esperado
+Enviando mensagem para layer 5
 Start checksum
 End checksum
 Enviando ACK: 2
           TOLAYER3: packet being lost
-Enviando mensagem para layer 5
 End B_input
 
 EVENT time: 3712.483887,  type: 0, timerinterrupt   entity: 0
@@ -308,10 +308,10 @@ End checksum
 Pacote 3 nao corrompido: cccccccccccccccccccc
 Mensagem normal
 Seqnum 3 veio como esperado
+Enviando mensagem para layer 5
 Start checksum
 End checksum
 Enviando ACK: 3
-Enviando mensagem para layer 5
 End B_input
 
 EVENT time: 4955.227051,  type: 2, fromlayer3  entity: 0
@@ -325,7 +325,7 @@ Pop pacote 3: cccccccccccccccccccc
 Start print_window
 Window A vazia
 End print_window
-PAREI O TIMER DO A
+Parei timer do A
 End A_input
 
 EVENT time: 5594.127441,  type: 1, fromlayer5  entity: 0
@@ -350,11 +350,11 @@ End checksum
 Pacote 4 nao corrompido: dddddddddddddddddddd
 Mensagem normal
 Seqnum 4 veio como esperado
+Enviando mensagem para layer 5
 Start checksum
 End checksum
 Enviando ACK: 4
           TOLAYER3: packet being corrupted
-Enviando mensagem para layer 5
 End B_input
 
 EVENT time: 5601.022461,  type: 2, fromlayer3  entity: 0
@@ -460,7 +460,7 @@ Pop pacote 4: dddddddddddddddddddd
 Start print_window
 Window A vazia
 End print_window
-PAREI O TIMER DO A
+Parei timer do A
 End A_input
 
 EVENT time: 7423.630859,  type: 1, fromlayer5  entity: 0

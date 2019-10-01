@@ -93,14 +93,10 @@ int B_window_itemCount;
 struct pkt top_window(AorB)
   int AorB;
 {
-  // printf("Start top_window\n");
-
   if (AorB == 0) {
-    // printf("End top_window\n");
     return A_window[A_window_front];
 
   } else if (AorB == 1) {
-    // printf("End top_window\n");
     return B_window[B_window_front];
   }
 }
@@ -108,14 +104,10 @@ struct pkt top_window(AorB)
 bool isEmpty_window(AorB)
   int AorB;
 {
-  // printf("Start isEmpty_window\n");
-
   if (AorB == 0) {
-    // printf("End isEmpty_window\n");
     return A_window_itemCount == 0;
 
   } else if (AorB == 1) {
-    // printf("End isEmpty_window\n");
     return B_window_itemCount == 0;
   }
 }
@@ -123,14 +115,10 @@ bool isEmpty_window(AorB)
 bool isFull_window(AorB)
   int AorB;
 {
-  // printf("Start isFull_window\n");
-
   if (AorB == 0) {
-    // printf("End isFull_window\n");
     return A_window_itemCount == WINDOW_MAX_SIZE;
 
   } else if (AorB == 1) {
-    // printf("End isFull_window\n");
     return B_window_itemCount == WINDOW_MAX_SIZE;
   }
 }
@@ -138,14 +126,10 @@ bool isFull_window(AorB)
 int size_window(AorB)
   int AorB;
 {
-  // printf("Start size_window\n");
-
   if (AorB == 0) {
-    // printf("End size_window\n");
     return A_window_itemCount;
 
   } else if (AorB == 1) {
-    // printf("End size_window\n");
     return B_window_itemCount;
   }
 }
@@ -154,8 +138,6 @@ void push_window(AorB, packet)
   int AorB;
   struct pkt packet;
 {
-  // printf("Start push_window\n");
-
   if (!isFull_window(AorB)) {
 
     if (AorB == 0) {
@@ -191,14 +173,11 @@ void push_window(AorB, packet)
       B_window_itemCount++;
     }
   }
-
-  // printf("End push_window\n");
 }
 
 struct pkt pop_window(AorB)
   int AorB;
 {
-  // printf("Start pop_window\n");
   struct pkt packet;
 
   if (AorB == 0) {
@@ -235,13 +214,13 @@ struct pkt pop_window(AorB)
 	
     B_window_itemCount--;
   }
+  
   printf("Pop pacote %d: ", packet.seqnum);
   for (int i = 0; i < 20; i++) {
     printf("%c", packet.payload[i]);
   }
   printf("\n");
 
-  // printf("End pop_window\n");
   return packet;  
 }
 
@@ -330,14 +309,10 @@ void send_window(AorB) // chamado no timerinterrupt
 struct pkt top_buffer(AorB)
   int AorB;
 {
-  // printf("Start top_buffer\n");
-
   if (AorB == 0) {
-    // printf("End top_buffer\n");
     return A_buffer[A_front];
 
   } else if (AorB == 1) {
-    // printf("End top_buffer\n");
     return B_buffer[B_front];
   }
 }
@@ -345,13 +320,10 @@ struct pkt top_buffer(AorB)
 bool isEmpty_buffer(AorB)
   int AorB;
 {
-  // printf("Start isEmpty_buffer\n");
   if (AorB == 0) {
-    // printf("End isEmpty_buffer\n");
     return A_itemCount == 0;
 
   } else if (AorB == 1) {
-    // printf("End isEmpty_buffer\n");
     return B_itemCount == 0;
   }
 }
@@ -359,14 +331,10 @@ bool isEmpty_buffer(AorB)
 bool isFull_buffer(AorB)
   int AorB;
 {
-  // printf("Start isFull_buffer\n");
-
   if (AorB == 0) {
-    // printf("End isFull_buffer\n");
     return A_itemCount == BUFFER_MAX_SIZE;
 
   } else if (AorB == 1) {
-    // printf("End isFull_buffer\n");
     return B_itemCount == BUFFER_MAX_SIZE;
   }
 }
@@ -374,14 +342,10 @@ bool isFull_buffer(AorB)
 int size_buffer(AorB)
   int AorB;
 {
-  // printf("Start size_buffer\n");
-
   if (AorB == 0) {
-    // printf("End size_buffer\n");
     return A_itemCount;
 
   } else if (AorB == 1) {
-    // printf("End size_buffer\n");
     return B_itemCount;
   }
 }  
@@ -390,8 +354,6 @@ void push_buffer(AorB, packet)
   int AorB;
   struct pkt packet;
 {
-  // printf("Start push_buffer\n");
-
   if (!isFull_buffer(AorB)) {
 
     if (AorB == 0) {
@@ -426,19 +388,14 @@ void push_buffer(AorB, packet)
     }
        
   } else {
-    printf("Buffer cheio! exit(0)");
-    // printf("End push_buffer\n");
+    printf("Buffer cheio -> exit(0)");
     exit(0);
   }
-
-  // printf("End push_buffer\n");
 }
 
 struct pkt pop_buffer(AorB)
   int AorB;
 {
-  // printf("Start pop_buffer\n");
-
   struct pkt packet;
 
   if (AorB == 0) {
@@ -476,8 +433,7 @@ struct pkt pop_buffer(AorB)
     B_itemCount--;
   }
 
-  // printf("End pop_buffer\n");
-  printf("Pop pacote %d: ", packet.seqnum);
+  printf("Pop pacote %d do buffer: ", packet.seqnum);
   for (int i = 0; i < 20; i++) {
     printf("%c", packet.payload[i]);
   }
@@ -643,11 +599,11 @@ void A_input(packet)
         push_window(1, packet);
       }
 
-      printf("PAREI O TIMER DO A\n");
+      printf("Parei timer do A\n");
       stop_buffertimer(0);
 
       if (!isEmpty_window(0)) {
-        printf("COMECEI O TIMER DO A\n");
+        printf("Comecei timer do A para pacote %d\n", A_expected_acknum);
         starttimer(0, A_increment);
       }
 
@@ -687,6 +643,9 @@ void B_input(packet)
         printf("Seqnum %d veio como esperado\n", packet.seqnum);
         B_expected_seqnum++;
 
+	      printf("Enviando mensagem para layer 5\n");
+        tolayer5(1, packet.payload);
+
         struct pkt ack;
         ack.seqnum = packet.seqnum;
         ack.acknum = packet.seqnum;
@@ -697,8 +656,6 @@ void B_input(packet)
 
         printf("Enviando ACK: %d\n", ack.acknum);
         tolayer3(1, ack);
-        printf("Enviando mensagem para layer 5\n");
-        tolayer5(1, packet.payload);
 
       } else {
         printf("Seqnum %d nao veio como esperado %d -> ignora e reenvia antigo ACK %d\n", 
@@ -731,11 +688,11 @@ void B_input(packet)
         push_window(1, packet);
       }
 
-      printf("PAREI O TIMER DO B\n");
+      printf("Parei timer do B\n");
       stop_buffertimer(1); 
 
       if (!isEmpty_window(1)) {
-        printf("COMECEI O TIMER DO B\n");
+        printf("Comecei timer do B para pacote %d\n", B_expected_acknum);
         starttimer(1, B_increment);
       }
 
@@ -809,19 +766,34 @@ void B_output(message)  /* need be completed only for extra credit */
   if (!isFull_window(1)) {
     B_sent_first = 1;
 
-    printf("Adicionando pacote %d na window\n", packet.seqnum);
-    push_window(1, message);
+    printf("Adicionando pacote %d na window: ", packet.seqnum);
+for (int i = 0; i < 20; i++) {
+      printf("%c", packet.payload[i]);
+    }
+    printf("\n");
+    push_window(1, packet);
 
     if (size_window(1) == 1) {
-      printf("COMECEI O TIMER DO B PARA PACOTE: %d\n", packet.seqnum);
+      printf("Comecei o timer para o pacote %d\n", packet.seqnum);
       starttimer(1, B_increment);
     }
-    
+
+printf("Enviando pacote %d: ", packet.seqnum);
+    for (int i = 0; i < 20; i++) {
+      printf("%c", packet.payload[i]);
+    }
+    printf("\n");    
+
     tolayer3(1, packet);
 
   } else {
-    printf("WINDOW CHEIA: ADICIONANDO AO BUFFER\n");
-    push_buffer(1, message);
+    printf("Window cheia -> adicionando pacote %d ao buffer: ", packet.seqnum);
+    for (int i = 0; i < 20; i++) {
+      printf("%c", packet.payload[i]);
+    }
+    printf("\n");
+
+    push_buffer(1, packet);
   }
 
   print_window(1);
