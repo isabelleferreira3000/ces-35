@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5a1612fb-a2e6-4046-9bfe-e30c5bebf249" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/relatorio/main.aux" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.aux" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/relatorio/main.log" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/relatorio/main.out" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/relatorio/main.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/relatorio/main.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/relatorio/main.tex" beforeDir="false" afterPath="$PROJECT_DIR$/relatorio/main.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,53 +11,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client_example.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="10" selection-start-line="1" selection-start-column="10" selection-end-line="1" selection-end-column="10" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server_example.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Server.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="215" column="27" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Client.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3525">
-              <caret line="235" selection-start-line="235" selection-end-line="235" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -126,7 +75,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -138,6 +86,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -205,17 +154,18 @@
       <updated>1567707412655</updated>
       <workItem from="1567707417160" duration="9789000" />
       <workItem from="1567814984385" duration="31949000" />
+      <workItem from="1568489734864" duration="195000" />
+      <workItem from="1568489959229" duration="146000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="64779000" />
+    <option name="totallyTimeSpent" value="65803000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.25338647" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25338647" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -296,69 +246,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Session.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Client.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server/Server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="211" column="15" selection-start-line="211" selection-start-column="15" selection-end-line="211" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server_example.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client_example.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="10" selection-start-line="1" selection-start-column="10" selection-end-line="1" selection-end-column="10" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3525">
-          <caret line="235" selection-start-line="235" selection-end-line="235" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="215" column="27" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Session.py" />
+    <entry file="file://$PROJECT_DIR$/Client/Client.py" />
+    <entry file="file://$PROJECT_DIR$/Server/Server.py" />
+    <entry file="file://$PROJECT_DIR$/server_example.py" />
+    <entry file="file://$PROJECT_DIR$/client_example.py" />
+    <entry file="file://$PROJECT_DIR$/Server.py" />
+    <entry file="file://$PROJECT_DIR$/Client.py" />
   </component>
 </project>
